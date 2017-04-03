@@ -2,7 +2,7 @@
 A sms bot for data collection. Backed by Amazon Lex.
 
 
-##Proposal
+## Proposal
 
 The basic idea of this project is an SMS data collection bot.
 We are going to play around with using Amazon Lex build most of the logic in the box, but may move away, because who wants to leave all of the fun stuff to Amazon?

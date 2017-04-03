@@ -36,7 +36,7 @@ to become more like:
   - The request that is made when the sms-bot has obtained all required information over SMS.
 
 
-*conversation* 
+*conversation*
   - the communication between a mobile phone and the sms-bot, consisting of but not limited to one request and one response.
     A conversation may have multiple requests and responses if the sms-bot determines that it does not have enough information to complete a query
 
@@ -45,7 +45,7 @@ to become more like:
 ## System Design
 
 Our system will follow the rough outline below:
-
+``` code:bash
     +----------+
     |          |      +---------------------------------+
     |  s3: log |      |                                 |
@@ -81,7 +81,7 @@ Our system will follow the rough outline below:
                          |   |   |   |   |   |   |   |
                          |   |   |   |   |   |   |   |
                          +---+   +---+   +---+   +---+
-
+```
 
 - SMS Gateway:
   A service that will provide us with a virtual number, receive SMS messages and forward them as HTTP calls, and turn HTTP calls into SMS messages. We already have one for MyWell, so that will be enough to get us started.

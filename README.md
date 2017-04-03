@@ -12,7 +12,7 @@ By building it with Lex, we can hopefully get a good feel for how it will work, 
 An important thing to note is that our final destination language is not English, it will be Hindi, Gujarati & Rajasthani. But let's start with english for now, and then we might teach it a bit of pirate.
 
 
-##MVP
+## MVP
 As described in this here post: https://medium.com/vessels/building-a-nlp-system-for-mywell-part-1-3fdc9d41e312
 
 Basically, we want a strict query such as:
@@ -30,19 +30,19 @@ to become more like:
 >Thanks! Well reading recorded for wellId 1501
 ```
 
-##Definitions
+## Definitions
 
-query:
+*query*
   - The request that is made when the sms-bot has obtained all required information over SMS.
 
 
-conversation:
+*conversation* 
   - the communication between a mobile phone and the sms-bot, consisting of but not limited to one request and one response.
     A conversation may have multiple requests and responses if the sms-bot determines that it does not have enough information to complete a query
 
 
 
-##System Design
+## System Design
 
 Our system will follow the rough outline below:
 

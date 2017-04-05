@@ -2,6 +2,7 @@ FROM node:latest
 
 # app directory
 ENV APP_DIR /usr/src/app
+ENV TOKEN .
 
 RUN mkdir -p ${APP_DIR}
 WORKDIR ${APP_DIR}
@@ -10,11 +11,12 @@ WORKDIR ${APP_DIR}
 RUN npm i -g pm2
 
 # install app dependencies
-ADD package.json ./
+ADD src/package.json ./
 RUN npm install
 
 # add the rest of the files
-ADD . ./
+ADD src/ ./
+ADD processes.json ./
 
 EXPOSE 3000
 

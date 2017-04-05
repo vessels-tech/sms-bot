@@ -2,8 +2,8 @@
 	"apps" : [
 		{
 			"name"        : "sms-bot",
-			"script"      : "./src/index",
-			"watch"       : "./src/",
+			"script"      : "index.js",
+			"watch"       : "./",
 			"autorestart" : true,
 			
 			"env": {

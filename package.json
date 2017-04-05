@@ -1,0 +1,26 @@
+{
+  "name": "vessels-sms-bot",
+  "version": "1.0.0",
+  "description": "A sms bot for data collection. Backed by Amazon Lex.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vessels-tech/sms-bot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vessels-tech/sms-bot/issues"
+  },
+  "homepage": "https://github.com/vessels-tech/sms-bot#readme",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.0",
+    "request-promise-native": "^1.0.3"
+  }
+}

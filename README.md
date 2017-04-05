@@ -1,5 +1,18 @@
 # sms-bot
-A sms bot for data collection. Backed by Amazon Lex.
+A sms bot for data collection. Backed by Wit.ai.
+
+
+##Getting started
+
+``` code:bash
+export TOKEN=<secret-token-from-wit>
+npm install
+./run.sh
+```
+
+To test it out, send a message to the running server:
+`curl "localhost:3000/message?number=0404404404&message=hello"`
+`curl "localhost:3000/message?number=0404404404&message=Well%201234%20in%20313503%20has%20a%20reading%20of%2012.34m%20today"`
 
 
 ## Proposal

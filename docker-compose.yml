@@ -6,8 +6,6 @@ services:
     container_name: sms-bot
     ports:
         - 3000:3000
-    networks:
-        - code-network
     volumes:
         - ./src/:/usr/src/app/src/
     environment:
@@ -17,8 +15,3 @@ services:
 
   redis:
     image: redis:3.0
-
-
-networks:
-  code-network:
-    driver: bridge

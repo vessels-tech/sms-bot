@@ -15,8 +15,8 @@ ADD src/package.json ./
 RUN npm install
 
 # add the rest of the files
-ADD src/ ./
-ADD processes.json ./
+ADD processes.json .
+ADD src/ ./src/
 
 EXPOSE 3000
 

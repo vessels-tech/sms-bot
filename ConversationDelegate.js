@@ -1,20 +1,14 @@
 "use strict"
 
-
-const intentTypes = [
-  "saveReading"
-];
-
 //For each intent, we need all of these entites in order to complete a query
 const desiredEntities = {
   saveReading: {
     resourceId: true,
     reading: true,
     datetime: true,
-    postcode: true
+    pincode: true
   }
-
-}
+};
 
 /**
  * A class for handling different conversations
@@ -23,7 +17,7 @@ const desiredEntities = {
 class ConversationDelegate {
   constructor(intentType) {
     //TODO: define and read different conversation types from a json config file
-    if (intentTypes.indexOf(intentType) === -1) {
+    if (Object.keys(desiredEntities).indexOf(intentType) === -1) {
       console.error(`ConversationDelegateType ${intentType} is not defined.`);
       process.exit(1);
     }
@@ -42,19 +36,25 @@ class ConversationDelegate {
    * @returns Promise<String message>
    */
   handleConversation(entities) {
-    console.log('entities', entities);
-    const missingEntities = findMissingEntities(entities);
+    //TODO: look up conversation context in redis, see if current conversation is in progress
+    const missingEntities = this.findMissingEntities(entities);
 
+    console.log(missingEntities);
+
+    if (missingEntities.length > 0) {
+      return "missing required entities!"
+    }
+
+    return "submitted query!";
   }
 
   /**
    * Check to see if any entities are missing.
+   * @returns list
    */
   findMissingEntities(entities) {
-    
+    return Object.keys(this.desiredEntities).filter(desiredEntitity => !(desiredEntitity in entities));
   }
-
-
 }
 
 module.exports = ConversationDelegate;

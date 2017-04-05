@@ -9,8 +9,6 @@ const BotApi = require('./BotApi');
 const ConversationDelegate = require('./ConversationDelegate');
 const ConversationRouter = require('./ConversationRouter');
 
-
-
 /* configure all of the things */
 const conversationRouter = new ConversationRouter();
 
@@ -22,15 +20,14 @@ const botApi = new BotApi('https://api.wit.ai', process.env.TOKEN, conversationR
 
 
 app.get('/message', function (req, res) {
-  console.log(req.query);
-
+  console.log("handling incoming request");
   if (isNullOrUndefined(req.query) && isNullOrUndefined(req.query.message)) {
     res.status(400).send('Missing message parameter');
   }
 
   botApi.understandMessage(req.query.message)
   .then(response => {
-    res.send(response);
+    res.send({message:response});
   })
   .catch(err => {
     res.status(err.statusCode).send({message:err.message, status:err.statusCode});

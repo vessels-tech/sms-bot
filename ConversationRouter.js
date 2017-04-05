@@ -22,7 +22,7 @@ class ConversationRouter {
       return rejectError(400, `ConversationDelegate is not defined/implemented for intent: ${intent}`);
     }
 
-    conversationDelegate.handleConversation(conversation);
+    return conversationDelegate.handleConversation(conversation);
   }
 }
 

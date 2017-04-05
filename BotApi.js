@@ -10,7 +10,6 @@ const rejectError = require('./utils').rejectError;
  *
  */
 class BotApi {
-
   constructor(baseUrl, accessToken, conversationRouter) {
     this.baseUrl = baseUrl;
     this.accessToken = accessToken;
@@ -21,7 +20,10 @@ class BotApi {
     }
   }
 
-  /*GET 'https://api.wit.ai/message?v=20160526&q=how%20many%20people%20between%20Tuesday%20and%20Friday' -H "Authorization: Bearer $TOKEN"*/
+  /*
+  GET 'https://api.wit.ai/message?v=20160526&q=how%20many%20people%20between%20Tuesday%20and%20Friday' \
+  -H "Authorization: Bearer $TOKEN"
+  */
   understandMessage(message) {
     const options = {
       uri: `${this.baseUrl}/message`,
@@ -37,14 +39,12 @@ class BotApi {
     return Promise.resolve(true)
     .then(() => request.get(options))
     .then(response => {
-      console.log(JSON.stringify(response));
       if (!isNullOrUndefined(response.entities) && isNullOrUndefined(response.entities.intent)) {
         return rejectError(404, `Intent not found for message: ${message}`);
       }
 
       const intent = response.entities.intent[0].value;
 
-      //TODO: verify we have an intent
 
       //TODO: send this response to the router!
       return this.conversationRouter.routeConversation(intent, response.entities);

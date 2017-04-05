@@ -1,0 +1,15 @@
+{
+	"apps" : [
+		{
+			"name"        : "sms-bot",
+			"script"      : "./src/index.js",
+			"watch"       : "./src/",
+			"autorestart" : true,
+			
+			"env": {
+				"runningEnvironment": "dev",
+			}
+			
+		}
+	]
+}

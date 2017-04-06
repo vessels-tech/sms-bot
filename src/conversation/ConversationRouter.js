@@ -1,7 +1,7 @@
 "use strict"
 
 const isNullOrUndefined = require('util').isNullOrUndefined;
-const rejectError = require('./utils').rejectError;
+const rejectError = require('../utils/utils').rejectError;
 
 /**
  * Routes conversations to ConversationDelegate based on the intent

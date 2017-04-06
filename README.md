@@ -59,8 +59,17 @@ to become more like:
  - When a conversation is initiated, we save it as a 'thread' to redis. Currently, a thread has a format:
 
     thread: {
-      
+      interactions: [
+        {
+          content: ?
+          type: [message/reply]
+        }
+        ...
+      ],
+      metadata: ?
     }
+
+  Every time we receive a new message from a user, or reply from the AI api, we append to the array of interactions
 
 
 ## System Design

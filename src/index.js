@@ -5,9 +5,9 @@ const app = express();
 
 app.use(bodyParser.json());
 
-const BotApi = require('./BotApi');
-const ConversationDelegate = require('./ConversationDelegate');
-const ConversationRouter = require('./ConversationRouter');
+const BotApi = require('./api/BotApi');
+const ConversationDelegate = require('./conversation/ConversationDelegate');
+const ConversationRouter = require('./conversation/ConversationRouter');
 
 /* configure all of the things */
 const conversationRouter = new ConversationRouter();

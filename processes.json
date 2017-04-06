@@ -4,12 +4,16 @@
 			"name"        : "sms-bot",
 			"script"      : "./src/index.js",
 			"watch"       : "./src/",
+      "watch_options": {
+        "usePolling": true,
+        "useFsEvents": false
+      },
 			"autorestart" : true,
-			
+
 			"env": {
 				"runningEnvironment": "dev",
 			}
-			
+
 		}
 	]
 }

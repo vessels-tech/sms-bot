@@ -1,10 +1,10 @@
 const isNullOrUndefined = require('util').isNullOrUndefined;
 const redis = require('redis');
+const bluebird = require('bluebird');
 
 //Not sure if this will work...
 bluebird.promisifyAll(redis.RedisClient.prototype);
 bluebird.promisifyAll(redis.Multi.prototype);
-
 
 
 module.exports = {
@@ -21,7 +21,9 @@ module.exports = {
     if (isNullOrUndefined(global.redisClients)) {
       global.redisClients = [];
     }
-    client = redis.createClient();
+    client = redis.createClient({
+      host:'redis'
+    });
     global.redisClients.push(client);
     return client;
   }

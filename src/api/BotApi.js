@@ -2,7 +2,7 @@
 
 const request = require('request-promise');
 const isNullOrUndefined = require('util').isNullOrUndefined;
-const utils = require('./utils');
+const utils = require('../utils/utils');
 const rejectError = utils.rejectError;
 const redisClient = utils.getRedisClient();
 

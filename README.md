@@ -55,6 +55,12 @@ to become more like:
   - the communication between a mobile phone and the sms-bot, consisting of but not limited to one request and one response.
     A conversation may have multiple requests and responses if the sms-bot determines that it does not have enough information to complete a query
 
+*thread*
+ - When a conversation is initiated, we save it as a 'thread' to redis. Currently, a thread has a format:
+
+    thread: {
+      
+    }
 
 
 ## System Design

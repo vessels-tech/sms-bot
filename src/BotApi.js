@@ -2,7 +2,9 @@
 
 const request = require('request-promise');
 const isNullOrUndefined = require('util').isNullOrUndefined;
-const rejectError = require('./utils').rejectError;
+const utils = require('./utils');
+const rejectError = utils.rejectError;
+const redisClient = utils.getRedisClient();
 
 
 /**
@@ -25,6 +27,9 @@ class BotApi {
   -H "Authorization: Bearer $TOKEN"
   */
   understandMessage(message, context) {
+    //TODO: get current thread from redis, check if that has an intent.
+    redisClient.get(context.number);
+
     const options = {
       uri: `${this.baseUrl}/message`,
       headers: {
@@ -39,6 +44,7 @@ class BotApi {
     return Promise.resolve(true)
     .then(() => request.get(options))
     .then(response => {
+
       if (!isNullOrUndefined(response.entities) && isNullOrUndefined(response.entities.intent)) {
         return rejectError(404, `Intent not found for message: ${message}`);
       }

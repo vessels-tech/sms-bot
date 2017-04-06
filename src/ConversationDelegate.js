@@ -1,5 +1,8 @@
 "use strict"
 
+
+const redis = require('redis');
+
 //For each intent, we need all of these entites in order to complete a query
 const desiredEntities = {
   saveReading: {
@@ -24,6 +27,10 @@ class ConversationDelegate {
 
     this.intent = intentType;
     this.desiredEntities = desiredEntities[intentType];
+    
+    this.client  = redis.createClient({
+      host: 'redis'
+    });
   }
 
   getIntent() {
@@ -39,13 +46,25 @@ class ConversationDelegate {
     //TODO: look up conversation context in redis, see if current conversation is in progress
     const missingEntities = this.findMissingEntities(entities);
 
-    console.log(missingEntities);
+    // console.log(missingEntities);
+    // console.log(entities)
 
     if (missingEntities.length > 0) {
-      return "missing required entities!"
+      this.client.set('kevin', 'kevin is not fun'); 
+      return 'missing something';
     }
-
-    return "submitted query!";
+    else {
+      return new Promise((resolve, reject) => {
+        this.client.get('kevin', (err, result) => {
+          if (err !== null) {
+            return reject(err);
+          }
+          else {
+            return resolve(result);
+          }
+        });
+      });
+    }
   }
 
   /**

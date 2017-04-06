@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:6.10-alpine
 
 # app directory
 ENV APP_DIR /usr/src/app

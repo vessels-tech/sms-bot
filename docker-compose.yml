@@ -5,11 +5,11 @@ services:
     build: .
     container_name: sms-bot
     ports:
-        - 3000:3000
+      - 3000:3000
     volumes:
-        - ./src/:/usr/src/app/src/
+      - ./src/:/usr/src/app/src/
     environment:
-        - TOKEN
+      - TOKEN
     links:
       - redis
 

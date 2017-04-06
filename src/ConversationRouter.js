@@ -16,13 +16,13 @@ class ConversationRouter {
     this.intents[conversationDelegate.getIntent()] = conversationDelegate;
   }
 
-  routeConversation(intent, conversation) {
+  routeConversation(intent, conversation, context) {
     const conversationDelegate = this.intents[intent];
     if (isNullOrUndefined(conversationDelegate)) {
       return rejectError(400, `ConversationDelegate is not defined/implemented for intent: ${intent}`);
     }
 
-    return conversationDelegate.handleConversation(conversation);
+    return conversationDelegate.handleConversation(conversation, context);
   }
 }
 

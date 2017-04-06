@@ -24,7 +24,7 @@ class BotApi {
   GET 'https://api.wit.ai/message?v=20160526&q=how%20many%20people%20between%20Tuesday%20and%20Friday' \
   -H "Authorization: Bearer $TOKEN"
   */
-  understandMessage(message) {
+  understandMessage(message, context) {
     const options = {
       uri: `${this.baseUrl}/message`,
       headers: {
@@ -45,9 +45,8 @@ class BotApi {
 
       const intent = response.entities.intent[0].value;
 
-
       //TODO: send this response to the router!
-      return this.conversationRouter.routeConversation(intent, response.entities);
+      return this.conversationRouter.routeConversation(intent, response.entities, context);
     });
   }
 

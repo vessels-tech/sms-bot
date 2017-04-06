@@ -24,8 +24,13 @@ app.get('/message', function (req, res) {
   if (isNullOrUndefined(req.query) && isNullOrUndefined(req.query.message)) {
     res.status(400).send('Missing message parameter');
   }
+  
+  const context = {
+    number: req.query.number,
+    message: req.query.message
+  }
 
-  botApi.understandMessage(req.query.message)
+  botApi.understandMessage(req.query.message, context)
   .then(response => {
     res.send({message:response});
   })

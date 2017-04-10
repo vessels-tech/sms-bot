@@ -1,7 +1,7 @@
 "use strict"
 
-
-const redis = require('redis');
+const RedisHelper = require('../utils/RedisHelper');
+const Thread = require('../Models/Thread');
 
 //For each intent, we need all of these entites in order to complete a query
 const desiredEntities = {
@@ -27,23 +27,29 @@ class ConversationDelegate {
 
     this.intent = intentType;
     this.desiredEntities = desiredEntities[intentType];
-    
-    this.client  = redis.createClient({
-      host: 'redis'
-    });
+    this.redisClient = new RedisHelper();
   }
 
   getIntent() {
     return this.intent;
   }
 
+
+  getReply(thread) {
+    
+  }
+
+
   /**
-   * handle a response from wit.ai!
-   * @param entities - entities object from wit.ai response: https://wit.ai/docs/http/20160526#get--message-link
-   * @param context - object containing some context to the message, eg mobile number
+   * looks up a thread, and does something with it
+   * @param number - the number associated with the thread
    * @returns Promise<String message>
    */
-  handleConversation(entities, context) {
+  handleConversation(number) {
+
+
+    console.log("handling conversation");
+
     //TODO: look up conversation context in redis, see if current conversation is in progress
     const missingEntities = this.findMissingEntities(entities);
 
@@ -52,10 +58,10 @@ class ConversationDelegate {
     // console.log(context)
 
     if (missingEntities.length > 0) {
-      this.client.set('kevin', 'kevin is not fun'); 
+      this.client.set('kevin', 'kevin is not fun');
       return 'missing something';
     }
-    
+
     else {
       return new Promise((resolve, reject) => {
         this.client.get('kevin', (err, result) => {

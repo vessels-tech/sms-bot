@@ -6,21 +6,13 @@ const app = express();
 app.use(bodyParser.json());
 
 const BotApi = require('./api/BotApi');
-const ConversationDelegate = require('./conversation/ConversationDelegate');
 const ConversationRouter = require('./conversation/ConversationRouter');
 
 /* configure all of the things */
-const conversationRouter = new ConversationRouter();
-
-//Register a delegate for each intent
-const saveReadingDelegate = new ConversationDelegate('saveReading');
-conversationRouter.registerConversationDelegate(saveReadingDelegate);
-
-const botApi = new BotApi('https://api.wit.ai', process.env.TOKEN, conversationRouter);
+const botApi = new BotApi();
 
 
 app.get('/message', function (req, res) {
-  console.log("handling incoming request");
   let missingParams = [];
   if (isNullOrUndefined(req.query.message)) {
     missingParams.add("message");
@@ -34,20 +26,20 @@ app.get('/message', function (req, res) {
     return res.status(400).send(`Missing required parameters:${missingParams}`);
   }
 
-  /*Should we get anything from redis at this point, and add to the context?
-    No - each component should interact with redis separately
-  That makes the wole thing more thread safe (Even though we don't have threads)*/
-  const context = {
-    number: req.query.number,
-    message: req.query.message
-  }
-
-  botApi.understandMessage(req.query.message, context)
+  //BotApi is the entrypoint for handling messages
+  botApi.handleMessage(req.query.message, req.query.number)
   .then(response => {
     res.send({message:response});
   })
   .catch(err => {
-    res.status(err.statusCode).send({message:err.message, status:err.statusCode});
+    console.error(err);
+
+    let statusCode = 500;
+    if (!isNullOrUndefined(err.statusCode)) {
+      statusCode = err.statusCode;
+    }
+
+    res.status(statusCode).send({message:err.message, status:statusCode});
   });
 });
 

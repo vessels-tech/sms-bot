@@ -1,12 +1,9 @@
-
-const interactionTypes = [
-  'message', //An sms message from a user
-  'reply'    //A reply from the AI API
-];
+const InteractionTypes = require('../utils/enums').InteractionTypes;
 
 class Interaction {
   constructor(data, type) {
-    if (interactionTypes.indexOf(type) == -1) {
+
+    if (Object.keys(InteractionTypes).map(key => InteractionTypes[key]).indexOf(type) == -1) {
       throw new Error(`Interaction type: ${type} not supported.`);
     }
 

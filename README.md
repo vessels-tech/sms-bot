@@ -24,7 +24,6 @@ We are going to play around with using Amazon Lex build most of the logic in the
 
 By building it with Lex, we can hopefully get a good feel for how it will work, and also define an interface for interacting with our chatbot's functions, which we can then implement ourselves if we so desire.
 
-
 An important thing to note is that our final destination language is not English, it will be Hindi, Gujarati & Rajasthani. But let's start with english for now, and then we might teach it a bit of pirate.
 
 

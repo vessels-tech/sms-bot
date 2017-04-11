@@ -1,25 +1,34 @@
 const isNullOrUndefined = require('util').isNullOrUndefined;
 const express = require('express');
 const bodyParser = require('body-parser');
-const app = express();
 
-app.use(bodyParser.json());
-
-const BotApi = require('./api/BotApi');
+const ConversationDelegate = require('./conversation/ConversationDelegate');
 const ConversationRouter = require('./conversation/ConversationRouter');
 
-/* configure all of the things */
-const botApi = new BotApi();
+const app = express();
+app.use(bodyParser.json());
 
+/* configure all of the things */
+const BotApi = require('./api/BotApi');
+
+const conversationRouter = new ConversationRouter(app);
+const saveReadingDelegate = new ConversationDelegate(app, 'saveReading');
+conversationRouter.registerConversationDelegate(saveReadingDelegate);
+
+const botApi = new BotApi(app);
+app.set('config', {
+  botApi: botApi,
+  conversationRouter: conversationRouter,
+});
 
 app.get('/message', function (req, res) {
   let missingParams = [];
   if (isNullOrUndefined(req.query.message)) {
-    missingParams.add("message");
+    missingParams.push("message");
   }
 
   if (isNullOrUndefined(req.query.number)) {
-    missingParams.add("number");
+    missingParams.push("number");
   }
 
   if (missingParams.length > 0) {
@@ -44,5 +53,5 @@ app.get('/message', function (req, res) {
 });
 
 app.listen(3000, function () {
-  console.log('Example app listening on port 3000!')
+  console.log('Example app listening on port 3000!');
 });

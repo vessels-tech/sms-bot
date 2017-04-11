@@ -10,6 +10,7 @@ services:
       - ./src/:/usr/src/app/src/
     environment:
       - TOKEN
+      - DISABLE_REDIS
     links:
       - redis
 

@@ -1,11 +1,5 @@
 const isNullOrUndefined = require('util').isNullOrUndefined;
 const redis = require('redis');
-const bluebird = require('bluebird');
-
-//Ideally we would use native promises, but they don't work with this redis client according to the docs
-// bluebird.promisifyAll(redis.RedisClient.prototype);
-// bluebird.promisifyAll(redis.Multi.prototype);
-
 
 class RedisHelper {
   constructor() {
@@ -38,7 +32,13 @@ class RedisHelper {
    * Value is JSON.stringified()
    */
   set(key, value) {
-    console.log(`Saving key:${key}, value:${JSON.stringify(value)}`);
+    console.log(`Saving key:${key}`);
+    const disable_redis = process.env.DISABLE_REDIS;
+
+    if (disable_redis === "true") {
+      console.log("skipping save to redis, as DISABLE_REDIS is true");
+      return Promise.resolve(true);
+    }
 
     return new Promise((resolve, reject) => {
       this.client.set(key, JSON.stringify(value), (err, value) => {
@@ -50,6 +50,22 @@ class RedisHelper {
       });
     });
   }
+
+  /**
+   * Delete a value from redis
+   */
+   delete(key) {
+     console.log(`Deleting key:${key}`);
+
+     return new Promise((resolve, reject) => {
+       this.client.del(key, (err, value) => {
+         if (!isNullOrUndefined(err)) {
+           return reject(err);
+         }
+         resolve(value);
+       });
+     });
+   }
 
 }
 

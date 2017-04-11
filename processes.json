@@ -9,7 +9,7 @@
         "useFsEvents": false
       },
 			"autorestart" : true,
-
+      "max_restarts": 1,
 			"env": {
 				"runningEnvironment": "dev",
 			}

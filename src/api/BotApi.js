@@ -14,7 +14,8 @@ const redisClient = new RedisHelper();
  *
  */
 class BotApi {
-  constructor() {
+  constructor(app) {
+    this.app = app;
 
   }
 
@@ -24,7 +25,7 @@ class BotApi {
     2. Let the Thread handle the message
   */
   handleMessage(message, number) {
-    return Thread.findOrCreate(number)
+    return Thread.findOrCreate(this.app, number)
       .then(_thread => {
         return _thread.sendHandoff(message);
       });

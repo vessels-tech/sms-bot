@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ./env.sh
+source ./env/env$STAGE.sh
 
 if [ "$1" == "build" ]
 then
@@ -15,4 +15,4 @@ then
 	docker-compose pull
 fi
 
-TOKEN=$TOKEN docker-compose up
+TOKEN=$TOKEN DISABLE_REDIS=$DISABLE_REDIS CLEAR_REDIS_ON_RESTART=$CLEAR_REDIS_ON_RESTART docker-compose up

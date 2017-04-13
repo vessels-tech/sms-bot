@@ -2,6 +2,9 @@
 
 const RedisHelper = require('../utils/RedisHelper');
 const Thread = require('../Models/Thread');
+const rejectError = require('../utils/utils').rejectError;
+const ConversationCompleteResponse = require('./ConversationCompleteResponse');
+
 
 //For each intent, we need all of these entites in order to complete a query
 const desiredEntities = {
@@ -18,63 +21,41 @@ const desiredEntities = {
  * eventually we will read these configurations from a json file or database or something
  */
 class ConversationDelegate {
-  constructor(intentType) {
+  constructor(app, intentType) {
+    this.app = app;
     //TODO: define and read different conversation types from a json config file
     if (Object.keys(desiredEntities).indexOf(intentType) === -1) {
-      console.error(`ConversationDelegateType ${intentType} is not defined.`);
-      process.exit(1);
+      return rejectError('500', `ConversationDelegateType ${intentType} is not defined.`);
     }
 
     this.intent = intentType;
     this.desiredEntities = desiredEntities[intentType];
-    this.redisClient = new RedisHelper();
   }
 
   getIntent() {
     return this.intent;
   }
 
-
-  getReply(thread) {
-    
-  }
-
-
-  /**
-   * looks up a thread, and does something with it
-   * @param number - the number associated with the thread
-   * @returns Promise<String message>
-   */
-  handleConversation(number) {
-
-
-    console.log("handling conversation");
-
-    //TODO: look up conversation context in redis, see if current conversation is in progress
-    const missingEntities = this.findMissingEntities(entities);
-
-    // console.log(missingEntities);
-    // console.log(entities)
-    // console.log(context)
-
-    if (missingEntities.length > 0) {
-      this.client.set('kevin', 'kevin is not fun');
-      return 'missing something';
-    }
-
-    else {
-      return new Promise((resolve, reject) => {
-        this.client.get('kevin', (err, result) => {
-          if (err !== null) {
-            return reject(err);
-          }
-          else {
-            return resolve(result);
-          }
-        });
+  submitConversation(entities) {
+    //TODO: talk to external api
+    console.log("Submitting entities!", entities);
+    return Promise.resolve(true)
+      .then(_response => {
+        return {message: "Readings have been submitted successfully"};
       });
-    }
   }
+
+  isConversationComplete(entities) {
+    const missingEntities = this.findMissingEntities(entities);
+    if (missingEntities.length > 0) {
+      const message = `Missing required entities ${missingEntities}`;
+
+      return new ConversationCompleteResponse(false, missingEntities, message);
+    }
+
+    return new ConversationCompleteResponse(true, [], "Conversation is complete. Submitting");
+  }
+
 
   /**
    * Check to see if any entities are missing.

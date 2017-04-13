@@ -22,8 +22,16 @@ then
   echo -e "${yellow}Warning: TOKEN not set. Cannot set default.${endColor}"
 fi
 
+if [ -z $DISABLE_REDIS ]
+then
+  echo -e "${yellow}DISABLE_REDIS not set. Setting to false.${endColor}"
+  DISABLE_REDIS=false
+fi
 
 echo -e "${bold}Configured Environment Variables:${endColor}"
-echo "  - TOKEN:         $TOKEN"
+echo "  - TOKEN:                          $TOKEN"
+echo "  - DISABLE_REDIS:                  $DISABLE_REDIS"
+
 
 export TOKEN
+export DISABLE_REDIS

@@ -40,17 +40,17 @@ const stateTransitions = {
 
 class Thread {
 
-  static findOrCreate(key) {
+  static findOrCreate(app, key) {
     return redisClient.get(key)
     .then(_threadString => {
       const _thread = JSON.parse(_threadString);
 
       if (isNullOrUndefined(_thread)) {
-        let thread = new Thread(key);
+        let thread = new Thread(app, key);
         return thread;
       }
       //Recreate the thread from redis. Need to call new to get the functions etc.
-      let thread = new Thread(key);
+      let thread = new Thread(app, key);
       thread.interactions = _thread.interactions;
       thread.entities = _thread.entities;
       thread.intent = _thread.intent;
@@ -60,7 +60,8 @@ class Thread {
     });
   }
 
-  constructor(number) {
+  constructor(app, number) {
+    this.app = app;
     this.number = number;
     this.interactions = []; //Ordered list of interactions between the user and api. Latest interactions are at the end!
     this.entities = {};     //The entities found in the interactions
@@ -140,6 +141,8 @@ class Thread {
         return this.handleResponseReceived();
       break;
       case ThreadStates.done:
+        //TODO: log this to a long term database eventually
+        return this.handleThreadDone();
       break;
       default:
         return rejectError(500, `Error: unknown state: ${this.state}`);
@@ -148,9 +151,6 @@ class Thread {
 
   /**
    * handle once we get a message back
-   * We will need to move this elsewhere, to handle different intents and integrations accordingly,
-   * but this works for now.
-   * Ideally, each intent would have a delegate that defined the required entities, and it's submission function
    */
   handleResponseReceived() {
     if (isNullOrUndefined(this.intent)) {
@@ -161,13 +161,41 @@ class Thread {
       return rejectError(400, `Sorry, your request could not be handled for intent: ${this.intent}. Please try again.`);
     }
 
-    const missing = this.findMissingEntities(this.entities);
-    if (missing.length === 0) {
-      //TODO: communicate with external API
-      return {message: 'Thanks, your message was received.'};
-    } else {
-      return {message: `Missing required entities ${missing}`};
+    //Check to see if the conversation is complete
+    const router = this.getConversationRouter();
+    const completeResponse = router.isConversationComplete(this);
+    if (completeResponse.complete) {
+      //submit!
+      return router.submitConversation(this)
+        .then(() => this.setState(ThreadStates.done))
+        .then(() => this.handleEnterState())
+        .then(_response => {
+          //we ignore the response here for now, we presume that if we have it is should be submitted.
+          //Any failures can be handled independently of the user
+          return completeResponse.message;
+        });
     }
+
+    //CompleteResponse contains the necessary user-facing message for us to ask for more info!
+    /*
+      Hmm this is a little unintutive. We set the state, call handle enter state, and THEN handle the response
+      for the previous state? I wonder how we could do it better.
+      The issue is that everything happens within a request lifecycle.
+
+      one option is to pass a promise chain of 'post response steps'
+      the response object will call the response, and look for any of these steps to perform after the response
+      we could define a custom object that could do this instead of just returning a response object as below
+    */
+    return Promise.resolve(true)
+      .then(() => this.setState(ThreadStates.pending))
+      .then(() => this.handleEnterState())
+      .then(() => {
+        return completeResponse.message;
+      });
+  }
+
+  handleThreadDone() {
+    return this.delete();
   }
 
   /**
@@ -205,6 +233,10 @@ class Thread {
       .filter(desiredEntitity => !(desiredEntitity in entities));
   }
 
+  getConversationRouter() {
+    return this.app.get('config').conversationRouter;
+  }
+
   /**
    * Save the Thread to redis.
    * //TODO: Set expiry
@@ -213,6 +245,13 @@ class Thread {
     //TODO: configure to not save in test or something... For now uncomment to avoid evil state
     // return Promise.resolve(true);
     return redisClient.set(this.number, this);
+  }
+
+  /**
+   * Delete the thread from redis
+   */
+  delete() {
+    return redisClient.delete(this.number);
   }
 
 }

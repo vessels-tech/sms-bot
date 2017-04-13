@@ -5,7 +5,7 @@ const isNullOrUndefined = require('util').isNullOrUndefined;
 const utils = require('../utils/utils');
 const rejectError = utils.rejectError;
 const RedisHelper = require('../utils/RedisHelper');
-const Thread = require('../Models/Thread');
+const Thread = require('../model/Thread');
 
 const redisClient = new RedisHelper();
 

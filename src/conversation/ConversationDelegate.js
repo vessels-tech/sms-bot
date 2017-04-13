@@ -1,7 +1,7 @@
 "use strict"
 
 const RedisHelper = require('../utils/RedisHelper');
-const Thread = require('../Models/Thread');
+const Thread = require('../model/Thread');
 const rejectError = require('../utils/utils').rejectError;
 const ConversationCompleteResponse = require('./ConversationCompleteResponse');
 

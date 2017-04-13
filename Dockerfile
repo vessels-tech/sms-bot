@@ -1,14 +1,16 @@
-FROM node:6.10-alpine
+FROM node:6
 
 # app directory
 ENV APP_DIR /usr/src/app
+ENV TEST_DIR ${APP_DIR}/test
 ENV TOKEN .
 
 RUN mkdir -p ${APP_DIR}
+RUN mkdir -p ${TEST_DIR}
 WORKDIR ${APP_DIR}
 
 # install pm2 first
-RUN npm i -g pm2
+RUN npm i -g pm2 mocha
 
 # install app dependencies
 ADD src/package.json ./

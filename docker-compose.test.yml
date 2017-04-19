@@ -1,0 +1,5 @@
+version: '2'
+
+services:
+  sms-bot:
+    command: /usr/src/app/test/test.sh

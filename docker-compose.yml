@@ -2,19 +2,29 @@ version: '2'
 
 services:
   sms-bot:
-    build: .
+    build: ./sms-bot/
     container_name: sms-bot
     ports:
       - 3000:3000
     volumes:
-      - ./src/:/usr/src/app/src/
-      - ./test/:/usr/src/app/test/
+      - ./sms-bot/src/:/usr/src/app/src/
+      - ./sms-bot/test/:/usr/src/app/test/
     environment:
       - "TERM=xterm-256color"
       - TOKEN
       - DISABLE_REDIS
     links:
       - redis
+      - mock-service
+
+  mock-service:
+    build: './mock-service/'
+    container_name: mock-service
+    ports:
+      - 3001:3001
+    volumes:
+      - ./mock-service/:/usr/src/app/
+
 
   redis:
     image: redis:3.0

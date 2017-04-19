@@ -20,7 +20,7 @@ describe('ServiceApi tests', () => {
   });
 
   it('sends a saveReading request', () => {
-    nock('http://localhost:8080')
+    nock('http://mock-service:3001')
       .post('/saveReading')
       .reply(200, 'test');
 
@@ -42,6 +42,4 @@ describe('ServiceApi tests', () => {
         }
       });
   });
-
-
 });

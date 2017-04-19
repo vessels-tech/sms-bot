@@ -14,7 +14,7 @@ const rejectError = utils.rejectError;
  */
 const services = {
   mock: {
-    baseUrl: "http://localhost:8080",
+    baseUrl: "http://mock-service:3001",
     endpoints: {
       saveReading: "/saveReading",
       queryReading: "/queryReading"

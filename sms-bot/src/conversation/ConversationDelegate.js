@@ -21,8 +21,6 @@ const desiredEntities = {
   }
 };
 
-const
-
 /**
  * A class for handling different conversations
  * eventually we will read these configurations from a json file or database or something

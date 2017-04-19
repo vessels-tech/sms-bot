@@ -16,7 +16,6 @@
 
 const bodyParser = require('body-parser');
 
-
 const rejectError = require('./utils/utils').rejectError;
 
 
@@ -90,7 +89,6 @@ class MessageRouter {
   }
 
   validateParams(params) {
-    console.log(params);
     if (Object.keys(integrationTypes).indexOf(params.integrationType) === -1){
       return rejectError(400, {message:`unsupported integrationType: ${params.integrationType}`});
     }
@@ -104,7 +102,6 @@ class MessageRouter {
 
   parseMessage(data, integrationType) {
     //TODO: parse the req.data differently based on the integrationType
-    console.log(data);
 
     if (!data) {
       return rejectError(400, `data is undefined`);

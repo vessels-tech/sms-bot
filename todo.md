@@ -1,5 +1,18 @@
 #TODO's
 
+
+Overall roadmap:
+- build Facebook demo bot:
+  https://developers.facebook.com/docs/messenger-platform/guides/quick-start
+- build management console
+- Integrate with MyWell & Way2Mint
+- Deploy!
+- Add more queries for MyWell, using console
+- Find some actual customers and on-board them
+  - What is the mvp for new customers?
+- Add more integrations
+-
+
 ##Capture todos here
 
 - fix Thread.handleResponseReceived
@@ -13,12 +26,6 @@
 - Start building website for demoing chatbot
 
 - Start building manangement console, for adding new queries, etc.
-
-- build interface to interact with SMS Services (that can be extended beyond just SMS)
-  - Nexmo
-  - Twilio
-  - Way2Mint
-- Fix the way we handle responses from MyWell - right now we just assume that everything is ok, but this doesn't work for handling queries instead of simply submissions.
 
 - replace isNullOrUndefined
 

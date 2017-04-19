@@ -23,5 +23,8 @@
     "request": "^2.81.0",
     "request-promise": "^4.2.0",
     "request-promise-native": "^1.0.3"
+  },
+  "devDependencies": {
+    "nock": "^9.0.13"
   }
 }

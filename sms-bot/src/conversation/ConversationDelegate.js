@@ -4,6 +4,9 @@ const RedisHelper = require('../utils/RedisHelper');
 const Thread = require('../model/Thread');
 const rejectError = require('../utils/utils').rejectError;
 const ConversationCompleteResponse = require('./ConversationCompleteResponse');
+const SubmitConversationResponse = require('./SubmitConversationResponse');
+const ServiceApi = require('../api/ServiceApi');
+
 
 
 //For each intent, we need all of these entites in order to complete a query
@@ -13,8 +16,24 @@ const desiredEntities = {
     reading: true,
     datetime: true,
     pincode: true
+  },
+  queryReading: {
+    resourceId: true,
+    pincode: true
   }
 };
+
+//TODO: define this in a better way, in a better place. Ideally both saveReading and queryReading will have a parent that corresponds
+//to the required ServiceApi
+const config = {
+  saveReading: {
+    serviceApi: new ServiceApi('mock')
+  },
+  queryReading: {
+    serviceApi: new ServiceApi('mock')
+  }
+
+}
 
 /**
  * A class for handling different conversations
@@ -30,6 +49,7 @@ class ConversationDelegate {
 
     this.intent = intentType;
     this.desiredEntities = desiredEntities[intentType];
+    this.serviceApi = config[intentType].serviceApi;
   }
 
   getIntent() {
@@ -38,10 +58,11 @@ class ConversationDelegate {
 
   submitConversation(entities) {
     //TODO: talk to external api
-    console.log("Submitting entities!", entities);
-    return Promise.resolve(true)
+    console.log("submitting to external Api");
+    return this.serviceApi.handleRequest(this.intent, entities)
       .then(_response => {
-        return {message: "Readings have been submitted successfully"};
+        console.log("response", _response);
+        return new SubmitConversationResponse(200, _response.message);
       });
   }
 

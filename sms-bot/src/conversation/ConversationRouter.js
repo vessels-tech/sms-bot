@@ -12,10 +12,6 @@ class ConversationRouter {
   constructor(app) {
     this.app = app;
     this.intents = {}
-
-    //Configure the default conversation router. Might be better to do this elsewhere
-    const saveReadingDelegate = new ConversationDelegate(app, 'saveReading');
-    this.registerConversationDelegate(saveReadingDelegate);
   }
 
   registerConversationDelegate(conversationDelegate) {

@@ -25,6 +25,10 @@ const desiredEntities = {
     reading: true,
     datetime: true,
     pincode: true
+  },
+  queryReading: {
+    resourceId: true,
+    pindcode: true
   }
 };
 
@@ -89,7 +93,6 @@ class Thread {
    */
   receiveResponse(response) {
     this.addInteraction(response, InteractionTypes.message);
-    console.log('response is', JSON.stringify(response));
 
     //Add any intent to the intent object.
     //If we already have the intent, log a intentchanged error
@@ -102,12 +105,10 @@ class Thread {
     if (isNullOrUndefined(this.intent)) {
       //we handle null intents later on!
       this.intent = intent;
-      console.log(`Configuring intial intent for state: ${this.intent}`);
     }
 
     //Add entities:
     this.entities = Object.assign(this.entities, response.entities);
-    console.log(`Updated Thread entities: ${JSON.stringify(this.entities)}`);
 
     return this.setState(ThreadStates.responseReceived)
       .then(() => this.handleEnterState());
@@ -154,25 +155,36 @@ class Thread {
    */
   handleResponseReceived() {
     if (isNullOrUndefined(this.intent)) {
-      return rejectError(500, `Sorry, I didn't undertand your query. Please try again.`)
+      //TODO: ideally we would have a chain of post response steps, where we could handle this state change
+      return this.setState(ThreadStates.done)
+        .then(() => this.handleEnterState())
+        .then(() => {
+          return rejectError(500, `Sorry, I didn't undertand your query. Please try again.`)
+        });
     }
 
     if (Object.keys(desiredEntities).indexOf(this.intent) === -1) {
-      return rejectError(400, `Sorry, your request could not be handled for intent: ${this.intent}. Please try again.`);
+      return this.setState(ThreadStates.done)
+        .then(() => this.handleEnterState())
+        .then(() => {
+          return rejectError(400, `Sorry, your request could not be handled for intent: ${this.intent}. Please try again.`);
+        });
     }
 
     //Check to see if the conversation is complete
     const router = this.getConversationRouter();
+    //Not sure why we are asking the router if the conversation is complete...
+    let submitConversationResponse = null;
     const completeResponse = router.isConversationComplete(this);
     if (completeResponse.complete) {
       //submit!
       return router.submitConversation(this)
+        .then(_submitConversationResponse => submitConversationResponse = _submitConversationResponse)
         .then(() => this.setState(ThreadStates.done))
         .then(() => this.handleEnterState())
-        .then(_response => {
-          //we ignore the response here for now, we presume that if we have it is should be submitted.
-          //Any failures can be handled independently of the user
-          return completeResponse.message;
+        .then(() => {
+
+          return submitConversationResponse.message;
         });
     }
 
@@ -207,7 +219,6 @@ class Thread {
     //Reverse the array - that way we pick up any new intent changes
     let reversedInteractions = this.interactions.slice().reverse();
     reversedInteractions.some(interaction => {
-      console.log("interaction", interaction);
       if (interaction.type === 'message') {
         return false;
       }

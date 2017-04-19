@@ -22,6 +22,6 @@ then
 	docker-compose pull
 fi
 
-docker-compose -f docker-compose.yml -f docker-compose.test.yml up
+docker-compose -f docker-compose.yml -f docker-compose.test.yml up sms-bot
 
 STAGE=$LAST_STAGE

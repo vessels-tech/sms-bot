@@ -7,3 +7,7 @@ describe('Array', function() {
     });
   });
 });
+
+describe('Api Tests', () => {
+  require('./api/ServiceApi');
+});

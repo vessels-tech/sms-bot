@@ -32,7 +32,6 @@ class RedisHelper {
    * Value is JSON.stringified()
    */
   set(key, value) {
-    console.log(`Saving key:${key}`);
     const disable_redis = process.env.DISABLE_REDIS;
 
     if (disable_redis === "true") {

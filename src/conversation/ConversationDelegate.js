@@ -4,6 +4,7 @@ const RedisHelper = require('../utils/RedisHelper');
 const Thread = require('../model/Thread');
 const rejectError = require('../utils/utils').rejectError;
 const ConversationCompleteResponse = require('./ConversationCompleteResponse');
+const SubmitConversationResponse = require('./SubmitConversationResponse');
 
 
 //For each intent, we need all of these entites in order to complete a query
@@ -12,6 +13,10 @@ const desiredEntities = {
     resourceId: true,
     reading: true,
     datetime: true,
+    pincode: true
+  },
+  queryReading: {
+    resourceId: true,
     pincode: true
   }
 };
@@ -38,10 +43,10 @@ class ConversationDelegate {
 
   submitConversation(entities) {
     //TODO: talk to external api
-    console.log("Submitting entities!", entities);
+    console.log("submitting to external Api");
     return Promise.resolve(true)
       .then(_response => {
-        return {message: "Readings have been submitted successfully"};
+        return new SubmitConversationResponse(200, "Submitted like a boss");
       });
   }
 

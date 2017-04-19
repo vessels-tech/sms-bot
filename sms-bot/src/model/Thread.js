@@ -192,7 +192,7 @@ class Thread {
     /*
       Hmm this is a little unintutive. We set the state, call handle enter state, and THEN handle the response
       for the previous state? I wonder how we could do it better.
-      The issue is that everything happens within a request lifecycle.
+      The issue is that everything happens within an express request lifecycle.
 
       one option is to pass a promise chain of 'post response steps'
       the response object will call the response, and look for any of these steps to perform after the response

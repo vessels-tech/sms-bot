@@ -1,4 +1,5 @@
 const nock = require('nock');
+const assert = require('assert');
 
 const ServiceApi = require('../../src/api/ServiceApi');
 
@@ -22,12 +23,15 @@ describe('ServiceApi tests', () => {
   it('sends a saveReading request', () => {
     nock('http://mock-service:3001')
       .post('/saveReading')
-      .reply(200, 'test');
+      .reply(200, {message:"Thanks. Submitted successfully."});
 
     const serviceApi = new ServiceApi('mock');
     const entities = {};
 
-    return serviceApi.handleRequest('saveReading', entities);
+    return serviceApi.handleRequest('saveReading', entities)
+      .then(_response => {
+        assert.deepEqual({message:"Thanks. Submitted successfully."}, _response);
+      })
 
   });
 

@@ -12,6 +12,8 @@
 
 - Start building website for demoing chatbot
 
+- Start building manangement console, for adding new queries, etc.
+
 - build interface to interact with SMS Services (that can be extended beyond just SMS)
   - Nexmo
   - Twilio
@@ -50,9 +52,9 @@
                              |                         |      | |                                     | |     |                        |
            Nexmo  <---------->                         |      | |          Thread                     | |     |                        <------->  MyWell
                              |                         |      | |                                     | |     |                        |
-           Way2Mint<--------->      Message API        <------> |                                     | <----->      Services API      <------->  Ushahadi
+           Way2Mint<--------->      Message Router     <------> |                                     | <----->      Services API      <------->  Ushahadi
                              |                         |      | +-------------------------------------+ |     |                        |
-           Test    <--------->                         |      | +-------------------------------------+ |     |                        <------->  etc...
+           Test    <--------->                         |      | +-------------------------------------+ |     |                        <------->  mock-service
                              |                         |      | |                                     | |     |                        |
                              +-------------------------+      | |                                     | |     +------------------------+
                                                               | |          Thread                     | |

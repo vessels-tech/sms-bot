@@ -2,4 +2,6 @@ version: '2'
 
 services:
   sms-bot:
-    command: /usr/src/app/test/test.sh
+    tty: true
+    # command: "/usr/src/app/test/test.sh"
+    command: "tail -f /dev/null"

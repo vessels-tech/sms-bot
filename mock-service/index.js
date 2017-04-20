@@ -78,6 +78,10 @@ app.get('/readings', (req, res) => {
 
 });
 
+app.get('/', (req, res) => {
+  res.status(200).send({message:'mock-sms-service up and running'});
+});
+
 app.listen(3001, function () {
   return mongoConnect()
     .then(_mongo => mongo = _mongo)

@@ -31,31 +31,25 @@ app.use(express.static('public'));
  */
 
 // App Secret can be retrieved from the App Dashboard
-const APP_SECRET = (process.env.MESSENGER_APP_SECRET) ? 
-  process.env.MESSENGER_APP_SECRET :
-  config.get('appSecret');
+const APP_SECRET = (process.env.MESSENGER_APP_SECRET)
 
 // Arbitrary value used to validate a webhook
-const VALIDATION_TOKEN = (process.env.MESSENGER_VALIDATION_TOKEN) ?
-  (process.env.MESSENGER_VALIDATION_TOKEN) :
-  config.get('validationToken');
+const VALIDATION_TOKEN = (process.env.MESSENGER_VALIDATION_TOKEN)
 
 // Generate a page access token for your page from the App Dashboard
-const PAGE_ACCESS_TOKEN = (process.env.MESSENGER_PAGE_ACCESS_TOKEN) ?
-  (process.env.MESSENGER_PAGE_ACCESS_TOKEN) :
-  config.get('pageAccessToken');
+const PAGE_ACCESS_TOKEN = (process.env.MESSENGER_PAGE_ACCESS_TOKEN)
 
 // URL where the app is running (include protocol). Used to point to scripts and 
 // assets located at this address. 
-const SERVER_URL = (process.env.SERVER_URL) ?
-  (process.env.SERVER_URL) :
-  config.get('serverURL');
+const SERVER_URL = (process.env.SERVER_URL)
 
 if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
   console.log(APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL)
   console.error("Missing config values");
   process.exit(1);
 }
+
+console.log('ENV', APP_SECRET, VALIDATION_TOKEN, PAGE_ACCESS_TOKEN, SERVER_URL);
 
 /*
  * Use your own validation token. Check that the token used in the Webhook 

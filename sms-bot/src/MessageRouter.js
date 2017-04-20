@@ -117,10 +117,9 @@ class MessageRouter {
           return this.botApi.handleMessage(messageAndNumber.message, messageAndNumber.number);
         })
         .then(response => {
-          console.log(senderId)
           // already sent facebook status
           if(req.params.integrationType == 'facebookBot') {
-            // facebookBot.sendTextMessage(,response);
+            facebookBot.sendTextMessage(senderId, response);
           }
           else {
             res.send({message:response});

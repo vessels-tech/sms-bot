@@ -11,15 +11,17 @@ sms-bot:
     - redis
 
 mock-service:
-  image: lewisdaly/mock-service:latest
+  image: lewisdaly/mock-sms-service:latest
   autoredeploy: true
   ports:
     - 3001:3001
   links:
-    - mongo  
+    - mongo
 
 mongo:
   image: mongo:3.4.3
+  volumes:
+    - /usr/src/.mongo:/data/db
 
 redis:
   image: redis:3.0

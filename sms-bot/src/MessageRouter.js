@@ -103,7 +103,7 @@ class MessageRouter {
     });
 
     this.router.post('/incoming/:userId/:integrationType', (req, res) => {
-
+      var senderId = null; // for facebook
       return this.validateParams(req.params)
         .then(() => this.parseMessage(req.body, req.params.integrationType))
         .then(messageAndNumber => {
@@ -111,12 +111,13 @@ class MessageRouter {
           // facebook requires confirmation asap
           if(req.params.integrationType == 'facebookBot') {
             res.sendStatus(200);
+            senderId = messageAndNumber.number
           }
           
           return this.botApi.handleMessage(messageAndNumber.message, messageAndNumber.number);
         })
         .then(response => {
-          console.log(messageAndNumber)
+          console.log(senderId)
           // already sent facebook status
           if(req.params.integrationType == 'facebookBot') {
             // facebookBot.sendTextMessage(,response);

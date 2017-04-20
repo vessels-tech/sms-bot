@@ -11,6 +11,9 @@ class FacebookBot {
     if (data.object == 'page') {
       let entry = data.entry[0];
       if (entry.messaging) {// message was received
+        entry.messaging.forEach(function(msg) {
+          console.log(msg);
+        })
         let msg = entry.messaging[0];
         console.log(msg.message.text)
         return {number: msg.sender.id, message: msg.message.text};

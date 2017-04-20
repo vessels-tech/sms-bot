@@ -4,8 +4,8 @@ services:
   sms-bot:
     build: ./sms-bot/
     container_name: sms-bot
-    ports:
-      - 3000:3000
+    expose:
+      - 3000
     volumes:
       - ./sms-bot/src/:/usr/src/app/src/
       - ./sms-bot/test/:/usr/src/app/test/
@@ -14,9 +14,16 @@ services:
       - TOKEN
       - DISABLE_REDIS
       - MESSENGER_VALIDATION_TOKEN
+      - VIRTUAL_HOST=dev1.kdoveton.com
+      - LETSENCRYPT_HOST=dev1.kdoveton.com
+      - LETSENCRYPT_EMAIL=kevindoveton@me.com
+      - HTTPS_METHOD=redirect
+      - VIRTUAL_PORT=3000
     links:
       - redis
       - mock-service
+      - nginx-proxy
+      - nginx-letsencrypt
 
   mock-service:
     build: './mock-service/'
@@ -26,6 +33,30 @@ services:
     volumes:
       - ./mock-service/:/usr/src/app/
 
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+        - "80:80"
+        - "443:443"
+    volumes:
+        - /var/run/docker.sock:/tmp/docker.sock:ro
+        - /certs:/etc/nginx/certs
+        - /etc/nginx/vhost.d
+        - /usr/share/nginx/html
+    networks:
+        - code-network
+
+nginx-letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    container_name: nginx-letsencrypt
+    volumes:
+        - /var/run/docker.sock:/tmp/docker.sock:rw
+        - /var/run/docker.sock:/var/run/docker.sock:ro
+    volumes_from:
+        - nginx-proxy
+    links:
+        - nginx-proxy
 
   redis:
     image: redis:3.0

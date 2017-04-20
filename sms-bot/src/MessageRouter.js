@@ -50,7 +50,6 @@ class MessageRouter {
     // catch facebookBot webhook authentication request
     // https://developers.facebook.com/docs/messenger-platform/guides/setup#webhook_setup
     this.router.use('/incoming/:userId/facebookBot', function(req, res, next) {
-      // console.log(req.query)
       if (req.method == 'GET') {
         // get request - probably a auth request
         if (req.query['hub.mode'] === 'subscribe') {
@@ -76,12 +75,6 @@ class MessageRouter {
       return this.validateParams(req.params)
         .then(() => this.parseMessage(req.query, req.params.integrationType))
         .then(messageAndNumber => {
-          
-          // facebook requires confirmation asap
-          if(req.params.integrationType == 'facebookBot') {
-            res.sendStatus(200);
-          }
-          
           return this.botApi.handleMessage(messageAndNumber.message, messageAndNumber.number);
         })
         .then(response => {
@@ -126,14 +119,19 @@ class MessageRouter {
           }
         })
         .catch(err => {
-          console.error(err);
-
-          let statusCode = 500;
-          if (err.statusCode) {
-            statusCode = err.statusCode;
+          if(req.params.integrationType == 'facebookBot') {
+            facebookBot.sendTextMessage(senderId, err.message);
           }
+          else {
+            console.error(err);
 
-          res.status(statusCode).send({message:err.message, status:statusCode});
+            let statusCode = 500;
+            if (err.statusCode) {
+              statusCode = err.statusCode;
+            }
+
+            res.status(statusCode).send({message:err.message, status:statusCode});
+          }
         });
     });
   }

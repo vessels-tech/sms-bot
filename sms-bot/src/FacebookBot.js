@@ -8,15 +8,17 @@ class FacebookBot {
   formatRequest(data) {
     // TODO: facebook may batch requests
     // figure out a nice way to handle this
+console.log('---',data)
     if (data.object == 'page') {
       
-      data.entry.forEach((entry) => {
-        entry.messaging.forEach((msg) => {
-          console.log(msg);
-        })
-      })
+//      data.entry.forEach((entry) => {
+//        entry.messaging.forEach((msg) => {
+//          console.log(msg);
+//        })
+//      })
       
       let entry = data.entry[0];
+console.log('---',data);
       if (entry.messaging) {// message was received
         let msg = entry.messaging[0];
         console.log(msg.message.text)

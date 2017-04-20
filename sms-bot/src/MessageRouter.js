@@ -105,7 +105,7 @@ class MessageRouter {
     this.router.post('/incoming/:userId/:integrationType', (req, res) => {
 
       return this.validateParams(req.params)
-        .then(() => this.parseMessage(req.query, req.params.integrationType))
+        .then(() => this.parseMessage(req.body, req.params.integrationType))
         .then(messageAndNumber => {
           
           // facebook requires confirmation asap
@@ -160,6 +160,7 @@ class MessageRouter {
     // facebook bot is structured differently
     // format the params
     if (integrationType == 'facebookBot') {
+console.log('--', data);
       data = facebookBot.formatRequest(receivedData);
     }
     else {

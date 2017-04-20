@@ -1,11 +1,12 @@
-sms-bot:
-  nginx-proxy:
-    image: jwilder/nginx-proxy
-    ports:
-      - 80:80
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock
+nginx-proxy:
+  image: jwilder/nginx-proxy
+  ports:
+    - 80:80
+  volumes:
+    - /var/run/docker.sock:/tmp/docker.sock
+    #TODO: put ssl certs here
 
+sms-bot:
   image: lewisdaly/sms-bot:latest
   autoredeploy: true
   ports:
@@ -19,7 +20,7 @@ sms-bot:
     - redis
 
 mock-service:
-  image: lewisdaly/mock-service:latest
+  image: lewisdaly/mock-sms-service:latest
   autoredeploy: true
   ports:
     - 3001:3001
@@ -31,7 +32,7 @@ mock-service:
 mongo:
   image: mongo:3.4.3
   volumes:
-    - ./.mongo:/data/db
+    - /usr/src/.mongo:/data/db
 
 redis:
   image: redis:3.0

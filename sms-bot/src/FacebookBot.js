@@ -5,13 +5,13 @@ class FacebookBot {
     this.PAGE_ACCESS_TOKEN = accessToken;
   }
   
-  formatData(data) {
+  formatRequest(data) {
     // TODO: facebook may batch requests
     // figure out a nice way to handle this
-    if (data.object == 'page') {
-      console.log(data.entry);
-    }
-    return {number: 0410101557, message: 'invalid message'}
+    //if (data.object == 'page') {
+      console.log('---',data);
+    //}
+    return {number: '0410101557', message: 'invalid message'}
   }
   
   /*

@@ -45,7 +45,7 @@ class FacebookBot {
       }
     };
 
-    callSendAPI(messageData);
+    this.callSendAPI(messageData);
   }
   
   /*

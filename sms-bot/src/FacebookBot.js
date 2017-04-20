@@ -11,6 +11,7 @@ class FacebookBot {
     if (data.object == 'page') {
       console.log(data.entry);
     }
+    return {number: 0410101557, message: 'invalid message'}
   }
   
   /*

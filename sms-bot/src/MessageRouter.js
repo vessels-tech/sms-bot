@@ -18,10 +18,13 @@ const bodyParser = require('body-parser');
 
 const rejectError = require('./utils/utils').rejectError;
 
+// TODO: maybe there is a better way to store this
+const MESSENGER_VALIDATION_TOKEN = process.env.MESSENGER_VALIDATION_TOKEN
 
 const integrationTypes = {
   cli: true,
-  Way2Mint: true
+  Way2Mint: true,
+  facebookBot: true
 };
 
 class MessageRouter {
@@ -41,6 +44,28 @@ class MessageRouter {
       //TODO: authenticate user from token or something
       next();
     });
+    
+    // catch facebookBot webhook authentication request
+    this.router.use('/incoming/:userId/facebookBot', function(req, res, next) {
+      // console.log(req.query)
+      if (req.method == 'GET') {
+        // get request - probably a auth request
+        if (req.query['hub.mode'] === 'subscribe') {
+          // definitely an auth request
+          if (req.query['hub.verify_token'] === MESSENGER_VALIDATION_TOKEN) {
+            res.status(200).send(req.query['hub.challenge']);
+          } 
+          else {
+            console.error("Failed validation. Make sure the validation tokens match.");
+            res.sendStatus(403);
+          }
+        }
+      } else {
+        // post request - probably a message
+        next();
+      }
+
+    })
   }
 
   setupRoutes() {
@@ -102,20 +127,25 @@ class MessageRouter {
 
   parseMessage(data, integrationType) {
     //TODO: parse the req.data differently based on the integrationType
-
+    
     if (!data) {
       return rejectError(400, `data is undefined`);
     }
 
     let missingParams = [];
-    if (!data.message) {
-      missingParams.push("message");
+    
+    if (integrationType == 'facebookBot') {
+      
     }
+    else {
+      if (!data.message) {
+        missingParams.push("message");
+      }
 
-    if (!data.number) {
-      missingParams.push("number");
+      if (!data.number) {
+        missingParams.push("number");
+      }
     }
-
     if (missingParams.length > 0) {
       return rejectError(400, `Missing required parameters:${missingParams}`);
     }

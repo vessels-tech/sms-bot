@@ -13,6 +13,7 @@ services:
       - "TERM=xterm-256color"
       - TOKEN
       - DISABLE_REDIS
+      - MESSENGER_VALIDATION_TOKEN
     links:
       - redis
       - mock-service

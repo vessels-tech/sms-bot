@@ -19,7 +19,9 @@ const bodyParser = require('body-parser');
 const rejectError = require('./utils/utils').rejectError;
 
 // TODO: maybe there is a better way to store this
-const MESSENGER_VALIDATION_TOKEN = process.env.MESSENGER_VALIDATION_TOKEN
+const MESSENGER_VALIDATION_TOKEN = process.env.MESSENGER_VALIDATION_TOKEN;
+const FacebookBot = require('./FacebookBot');
+const facebookBot = new FacebookBot(process.env.MESSENGER_PAGE_ACCESS_TOKEN);
 
 const integrationTypes = {
   cli: true,
@@ -46,6 +48,7 @@ class MessageRouter {
     });
     
     // catch facebookBot webhook authentication request
+    // https://developers.facebook.com/docs/messenger-platform/guides/setup#webhook_setup
     this.router.use('/incoming/:userId/facebookBot', function(req, res, next) {
       // console.log(req.query)
       if (req.method == 'GET') {
@@ -118,6 +121,7 @@ class MessageRouter {
       return rejectError(400, {message:`unsupported integrationType: ${params.integrationType}`});
     }
 
+    // TODO: more users?
     if (params.userId !== '1') {
       return rejectError(404, {message:`user with userId:${params.userId} not found`});
     }
@@ -125,27 +129,33 @@ class MessageRouter {
     return Promise.resolve(true);
   }
 
-  parseMessage(data, integrationType) {
+  parseMessage(receivedData, integrationType) {
     //TODO: parse the req.data differently based on the integrationType
     
-    if (!data) {
-      return rejectError(400, `data is undefined`);
+    if (!receivedData) {
+      return rejectError(400, `receivedData is undefined`);
     }
 
     let missingParams = [];
+    let data = {};
     
+    // facebook bot is structured differently
+    // format the params
     if (integrationType == 'facebookBot') {
-      
+      data = facebookBot.formatRequest(receivedData);
     }
     else {
-      if (!data.message) {
+      if (!receivedData.message) {
         missingParams.push("message");
       }
 
-      if (!data.number) {
+      if (!receivedData.number) {
         missingParams.push("number");
       }
+      
+      data = receivedData;
     }
+    
     if (missingParams.length > 0) {
       return rejectError(400, `Missing required parameters:${missingParams}`);
     }

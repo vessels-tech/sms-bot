@@ -37,7 +37,9 @@ echo -e "${bold}Configured Environment Variables:${endColor}"
 echo "  - TOKEN:                          $TOKEN"
 echo "  - DISABLE_REDIS:                  $DISABLE_REDIS"
 echo "  - MESSENGER_VALIDATION_TOKEN      $MESSENGER_VALIDATION_TOKEN"
+echo "  - MESSENGER_PAGE_ACCESS_TOKEN     $MESSENGER_PAGE_ACCESS_TOKEN"
 
 export TOKEN
 export DISABLE_REDIS
 export MESSENGER_VALIDATION_TOKEN
+export MESSENGER_PAGE_ACCESS_TOKEN

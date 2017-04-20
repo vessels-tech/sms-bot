@@ -24,7 +24,13 @@ services:
       - 3001:3001
     volumes:
       - ./mock-service/:/usr/src/app/
+    links:
+      - mongo
 
+  mongo:
+    image: mongo:3.4.3
+    volumes:
+      - ./.mongo:/data/db
 
   redis:
     image: redis:3.0

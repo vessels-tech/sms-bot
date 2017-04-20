@@ -1,0 +1,25 @@
+sms-bot:
+  image: lewisdaly/sms-bot:latest
+  autoredeploy: true
+  ports:
+    - 80:3000
+  environment:
+    - "TERM=xterm-256color"
+    - "TOKEN="
+    - "DISABLE_REDIS=false"
+  links:
+    - redis
+
+mock-service:
+  image: lewisdaly/mock-service:latest
+  autoredeploy: true
+  ports:
+    - 3001:3001
+  links:
+    - mongo  
+
+mongo:
+  image: mongo:3.4.3
+
+redis:
+  image: redis:3.0

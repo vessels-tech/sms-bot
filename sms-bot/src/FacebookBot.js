@@ -23,11 +23,11 @@ class FacebookBot {
         return {number: msg.sender.id, message: msg.message.text};
       } 
       else {
-        return null;
+        return {number: '0410101557', message: 'msg.message.text'};
       }
     }
     else {
-      return null;
+      return {number: '0410101557', message: 'msg.message.text'};
     }
   }
   

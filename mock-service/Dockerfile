@@ -12,6 +12,8 @@ RUN npm install -g nodemon
 ADD package.json ./
 RUN npm install
 
+COPY . ./
+
 
 EXPOSE 3001
 

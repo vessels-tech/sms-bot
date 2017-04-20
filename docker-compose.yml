@@ -44,10 +44,8 @@ services:
         - /certs:/etc/nginx/certs
         - /etc/nginx/vhost.d
         - /usr/share/nginx/html
-    networks:
-        - code-network
 
-nginx-letsencrypt:
+  nginx-letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion
     container_name: nginx-letsencrypt
     volumes:

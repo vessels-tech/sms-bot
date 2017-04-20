@@ -9,11 +9,15 @@ class FacebookBot {
     // TODO: facebook may batch requests
     // figure out a nice way to handle this
     if (data.object == 'page') {
-      let entry = data.entry[0];
-      if (entry.messaging) {// message was received
-        entry.messaging.forEach(function(msg) {
+      
+      data.entry.forEach((entry) => {
+        entry.messaging.forEach((msg) => {
           console.log(msg);
         })
+      })
+      
+      let entry = data.entry[0];
+      if (entry.messaging) {// message was received
         let msg = entry.messaging[0];
         console.log(msg.message.text)
         return {number: msg.sender.id, message: msg.message.text};

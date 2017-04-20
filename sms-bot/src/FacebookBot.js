@@ -11,7 +11,7 @@ class FacebookBot {
     if (data.object == 'page') {
       let entry = data.entry[0];
       if (entry.messaging) {// message was received
-        let msg = entry.messaging;
+        let msg = entry.messaging[0];
         return {number: msg.sender.id, message: msg.message.text};
       } 
       else {

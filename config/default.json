@@ -2,5 +2,5 @@
     "appSecret": "=",
     "pageAccessToken": "",
     "validationToken": "",
-    "serverURL": "http://dev1.kdoveton.com"
+    "serverURL": "https://dev1.kdoveton.com"
 }

@@ -8,9 +8,10 @@ class FacebookBot {
   formatRequest(data) {
     // TODO: facebook may batch requests
     // figure out a nice way to handle this
-    //if (data.object == 'page') {
-      console.log('---',data);
-    //}
+    if (data.object == 'page') {
+      console.log(data.entry[0].messaging)
+      // console.log('---',data);
+    }
     return {number: '0410101557', message: 'invalid message'}
   }
   

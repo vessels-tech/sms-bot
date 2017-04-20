@@ -46,7 +46,7 @@ console.log('---',data)
       }
     };
 
-    callSendAPI(messageData);
+    this.callSendAPI(messageData);
   }
   
   /*

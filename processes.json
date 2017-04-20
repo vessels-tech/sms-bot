@@ -1,0 +1,14 @@
+{
+	"apps" : [
+		{
+			"name"        : "messenger-bot",
+			"script"      : "./app.js",
+			"watch"       : "./",
+			"autorestart" : true,
+			
+			"env": {
+			}
+			
+		}
+	]
+}

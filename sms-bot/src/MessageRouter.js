@@ -116,8 +116,12 @@ class MessageRouter {
           return this.botApi.handleMessage(messageAndNumber.message, messageAndNumber.number);
         })
         .then(response => {
+          console.log(messageAndNumber)
           // already sent facebook status
-          if(req.params.integrationType != 'facebookBot') {
+          if(req.params.integrationType == 'facebookBot') {
+            // facebookBot.sendTextMessage(,response);
+          }
+          else {
             res.send({message:response});
           }
         })
@@ -160,7 +164,6 @@ class MessageRouter {
     // facebook bot is structured differently
     // format the params
     if (integrationType == 'facebookBot') {
-console.log('--', data);
       data = facebookBot.formatRequest(receivedData);
     }
     else {

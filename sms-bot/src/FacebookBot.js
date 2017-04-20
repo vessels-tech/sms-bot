@@ -18,10 +18,8 @@ console.log('---',data)
 //      })
       
       let entry = data.entry[0];
-console.log('---',data);
       if (entry.messaging) {// message was received
         let msg = entry.messaging[0];
-        console.log(msg.message.text)
         return {number: msg.sender.id, message: msg.message.text};
       } 
       else {

@@ -30,8 +30,7 @@ services:
         build: .
         image: messenger-bot
         expose:
-            - 80
-            - 443
+            - 3000
         networks:
             - code-network
         environment:
@@ -39,7 +38,7 @@ services:
             - "LETSENCRYPT_HOST=dev1.kdoveton.com"
             - "LETSENCRYPT_EMAIL=kevindoveton@me.com"
             - "HTTPS_METHOD=redirect"
-            - "VIRTUAL_PORT=80"
+            - "VIRTUAL_PORT=3000"
 
 networks:
     code-network:

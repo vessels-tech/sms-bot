@@ -39,6 +39,10 @@ services:
             - "LETSENCRYPT_EMAIL=kevindoveton@me.com"
             - "HTTPS_METHOD=redirect"
             - "VIRTUAL_PORT=3000"
+            - MESSENGER_APP_SECRET
+            - MESSENGER_PAGE_ACCESS_TOKEN
+            - MESSENGER_VALIDATION_TOKEN
+            - SERVER_URL
 
 networks:
     code-network:

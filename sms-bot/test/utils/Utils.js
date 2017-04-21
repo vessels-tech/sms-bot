@@ -4,6 +4,12 @@ const Utils = require('../../src/utils/utils');
 
 describe('isNullOrUndefined tests', () => {
 
+  it('returns true if no param is passed', () => {
+    let actual = Utils.isNullOrUndefined();
+    let expected = true;
+    assert.equal(actual, expected);
+  });
+
   it('returns true if undefined', () => {
     let actual = Utils.isNullOrUndefined(undefined);
     let expected = true;

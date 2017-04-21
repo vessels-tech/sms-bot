@@ -2,9 +2,22 @@ nginx-proxy:
   image: jwilder/nginx-proxy
   ports:
     - 80:80
+    - 443:443
   volumes:
     - /var/run/docker.sock:/tmp/docker.sock
-    #TODO: put ssl certs here
+    - /certs:/etc/nginx/certs
+    - /etc/nginx/vhost.d
+    - /usr/share/nginx/html
+
+nginx-letsencrypt:
+  image: jrcs/letsencrypt-nginx-proxy-companion
+  volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+  volumes_from:
+      - nginx-proxy
+  links:
+      - nginx-proxy
 
 sms-bot:
   image: lewisdaly/sms-bot:latest
@@ -16,6 +29,9 @@ sms-bot:
     - "TOKEN="
     - "DISABLE_REDIS=false"
     - VIRTUAL_HOST=sms.vesselstech.com
+    - LETSENCRYPT_HOST=sms.vesselstech.com
+    - HTTPS_METHOD=redirect
+    - VIRTUAL_PORT=3000
   links:
     - redis
 

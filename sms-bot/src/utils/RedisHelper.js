@@ -1,4 +1,4 @@
-const isNullOrUndefined = require('util').isNullOrUndefined;
+const isNullOrUndefined = require('./utils').isNullOrUndefined;
 const redis = require('redis');
 
 class RedisHelper {

@@ -1,7 +1,7 @@
 "use strict";
 
 const request = require('request-promise');
-const isNullOrUndefined = require('util').isNullOrUndefined;
+const isNullOrUndefined = require('../utils/utils').isNullOrUndefined;
 const utils = require('../utils/utils');
 const rejectError = utils.rejectError;
 const RedisHelper = require('../utils/RedisHelper');

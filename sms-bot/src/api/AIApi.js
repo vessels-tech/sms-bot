@@ -1,5 +1,5 @@
 const request = require('request-promise');
-const isNullOrUndefined = require('util').isNullOrUndefined;
+const isNullOrUndefined = require('../utils/utils').isNullOrUndefined;
 
 class AIApi {
   constructor() {

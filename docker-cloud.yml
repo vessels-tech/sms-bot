@@ -6,8 +6,8 @@ nginx-proxy:
   volumes:
     - /var/run/docker.sock:/tmp/docker.sock
     - /certs:/etc/nginx/certs
-    - /etc/nginx/vhost.d
-    - /usr/share/nginx/html
+    - /nginx/vhost.d:/etc/nginx/vhost.d
+    - /nginx/html:/usr/share/nginx/html
 
 nginx-letsencrypt:
   image: jrcs/letsencrypt-nginx-proxy-companion
@@ -30,6 +30,7 @@ sms-bot:
     - "DISABLE_REDIS=false"
     - VIRTUAL_HOST=sms.vesselstech.com
     - LETSENCRYPT_HOST=sms.vesselstech.com
+    - LETSENCRYPT_EMAIL=kevindoveton@me.com
     - HTTPS_METHOD=redirect
     - VIRTUAL_PORT=3000
   links:

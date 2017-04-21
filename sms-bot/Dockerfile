@@ -13,7 +13,7 @@ WORKDIR ${APP_DIR}
 RUN npm i -g pm2 mocha
 
 # install app dependencies
-ADD src/package.json ./
+ADD package.json ./
 RUN npm install
 
 # add the rest of the files

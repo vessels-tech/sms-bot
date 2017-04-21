@@ -15,4 +15,9 @@ then
 	docker-compose pull
 fi
 
-TOKEN=$TOKEN DISABLE_REDIS=$DISABLE_REDIS docker-compose up
+if [ "$1" == "dev1" ]
+then
+  TOKEN=$TOKEN DISABLE_REDIS=$DISABLE_REDIS MESSENGER_VALIDATION_TOKEN=$MESSENGER_VALIDATION_TOKEN MESSENGER_PAGE_ACCESS_TOKEN=$MESSENGER_PAGE_ACCESS_TOKEN docker-compose -f docker-compose.dev1.yml up
+else
+  TOKEN=$TOKEN DISABLE_REDIS=$DISABLE_REDIS docker-compose up
+fi

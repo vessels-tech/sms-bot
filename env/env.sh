@@ -33,6 +33,11 @@ then
   echo -e "${yellow}Warning: MESSENGER_VALIDATION_TOKEN not set. Cannot set default.${endColor}"
 fi
 
+if [ -z $MESSENGER_PAGE_ACCESS_TOKEN ]
+then
+  echo -e "${yellow}Warning: MESSENGER_PAGE_ACCESS_TOKEN not set. Cannot set default.${endColor}"
+fi
+
 echo -e "${bold}Configured Environment Variables:${endColor}"
 echo "  - TOKEN:                          $TOKEN"
 echo "  - DISABLE_REDIS:                  $DISABLE_REDIS"

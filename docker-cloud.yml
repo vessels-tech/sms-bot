@@ -43,6 +43,10 @@ mock-service:
     - 3001:3001
   environment:
     - VIRTUAL_HOST=mock-service.vesselstech.com
+    - LETSENCRYPT_HOST=mock-service.vesselstech.com
+    - LETSENCRYPT_EMAIL=kevindoveton@me.com
+    - HTTPS_METHOD=redirect
+    - VIRTUAL_PORT=3001
   links:
     - mongo
 

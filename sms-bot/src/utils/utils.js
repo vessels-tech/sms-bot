@@ -1,4 +1,4 @@
-const isNullOrUndefined = require('util').isNullOrUndefined;
+// const isNullOrUndefined = require('util').isNullOrUndefined;
 
 module.exports = {
   rejectError: (statusCode, message, shouldPromise) => {
@@ -9,5 +9,8 @@ module.exports = {
     }
     return Promise.reject(error);
   },
-
+  
+  isNullOrUndefined: (variable) => {
+    return (typeof variable === 'undefined' || variable === null);
+  }
 };

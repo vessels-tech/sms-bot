@@ -1,7 +1,7 @@
 "use strict"
 
 const ConversationDelegate = require('./ConversationDelegate');
-const isNullOrUndefined = require('util').isNullOrUndefined;
+const isNullOrUndefined = require('../utils/utils').isNullOrUndefined;
 const rejectError = require('../utils/utils').rejectError;
 
 /**

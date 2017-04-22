@@ -13,6 +13,10 @@ describe('sms-bot tests', () => {
   describe('Api Tests', () => {
     require('./api/ServiceApi');
   });
+  
+  describe('Util Tests', () => {
+    require('./utils/Utils');
+  })
 
 
   afterEach(function() {

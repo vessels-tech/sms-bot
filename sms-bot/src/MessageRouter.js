@@ -46,22 +46,25 @@ class MessageRouter {
       //TODO: authenticate user from token or something
       next();
     });
-    
+
     // catch facebookBot webhook authentication request
     // https://developers.facebook.com/docs/messenger-platform/guides/setup#webhook_setup
-    this.router.use('/incoming/:userId/facebookBot', function(req, res, next) {
+
+
+    //TODO: we should make a separate middleware for auth, that doesn't get confused with the incoming message
+    this.router.use('/auth/facebookBot', function(req, res, next) {
       if (req.method == 'GET') {
-        // get request - probably a auth request
-        if (req.query['hub.mode'] === 'subscribe') {
-          // definitely an auth request
-          if (req.query['hub.verify_token'] === MESSENGER_VALIDATION_TOKEN) {
-            res.status(200).send(req.query['hub.challenge']);
-          } 
-          else {
-            console.error("Failed validation. Make sure the validation tokens match.");
-            res.sendStatus(403);
-          }
+        console.log(JSON.stringify(req.query['hub.mode']));
+
+        if (req.query['hub.mode'] === 'subscribe' && req.query['hub.verify_token'] === MESSENGER_VALIDATION_TOKEN) {
+          res.status(200).send(req.query['hub.challenge']);
+          return next();
         }
+          
+        console.error("Failed validation. Make sure the validation tokens match.");
+        res.sendStatus(403);
+        return next();
+
       } else {
         // post request - probably a message
         next();
@@ -100,13 +103,13 @@ class MessageRouter {
       return this.validateParams(req.params)
         .then(() => this.parseMessage(req.body, req.params.integrationType))
         .then(messageAndNumber => {
-          
+
           // facebook requires confirmation asap
           if(req.params.integrationType == 'facebookBot') {
             res.sendStatus(200);
             senderId = messageAndNumber.number
           }
-          
+
           return this.botApi.handleMessage(messageAndNumber.message, messageAndNumber.number);
         })
         .then(response => {
@@ -151,14 +154,14 @@ class MessageRouter {
 
   parseMessage(receivedData, integrationType) {
     //TODO: parse the req.data differently based on the integrationType
-    
+
     if (!receivedData) {
       return rejectError(400, `receivedData is undefined`);
     }
 
     let missingParams = [];
     let data = {};
-    
+
     // facebook bot is structured differently
     // format the params
     if (integrationType == 'facebookBot') {
@@ -172,10 +175,10 @@ class MessageRouter {
       if (!receivedData.number) {
         missingParams.push("number");
       }
-      
+
       data = receivedData;
     }
-    
+
     if (missingParams.length > 0) {
       return rejectError(400, `Missing required parameters:${missingParams}`);
     }

@@ -3,10 +3,8 @@ services:
   sms-bot:
     build: ./sms-bot/
     container_name: sms-bot
-    expose:
-      - 3000
-    # ports:
-      # - 3000:3000
+    ports:
+      - 3000:3000
     volumes:
       - ./sms-bot/src/:/usr/src/app/src/
       - ./sms-bot/test/:/usr/src/app/test/

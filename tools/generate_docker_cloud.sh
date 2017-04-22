@@ -3,6 +3,9 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 source $DIR/../.env
 
-sed "s/TOKEN=/TOKEN=$TOKEN/g" $DIR/../docker-cloud.yml | pbcopy
+sed "s/TOKEN=__TOKEN__/TOKEN=$TOKEN/g" $DIR/../docker-cloud.yml | \
+sed "s/MESSENGER_VALIDATION_TOKEN=__MESSENGER_VALIDATION_TOKEN__/MESSENGER_VALIDATION_TOKEN=$MESSENGER_VALIDATION_TOKEN/g" | \
+sed "s/MESSENGER_PAGE_ACCESS_TOKEN=__MESSENGER_PAGE_ACCESS_TOKEN__/MESSENGER_PAGE_ACCESS_TOKEN=$MESSENGER_PAGE_ACCESS_TOKEN/g" | \
+pbcopy
 
 echo 'copied to your clipboard!'

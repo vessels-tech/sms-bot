@@ -26,7 +26,9 @@ sms-bot:
     - 3000:3000
   environment:
     - "TERM=xterm-256color"
-    - "TOKEN="
+    - "TOKEN=__TOKEN__"
+    - "MESSENGER_VALIDATION_TOKEN=__MESSENGER_VALIDATION_TOKEN__"
+    - "MESSENGER_PAGE_ACCESS_TOKEN=__MESSENGER_PAGE_ACCESS_TOKEN__"
     - "DISABLE_REDIS=false"
     - VIRTUAL_HOST=sms.vesselstech.com
     - LETSENCRYPT_HOST=sms.vesselstech.com
@@ -35,6 +37,16 @@ sms-bot:
     - VIRTUAL_PORT=3000
   links:
     - redis
+
+sms-ui:
+  image: lewisdaly/sms-bot-ui:latest
+  autoredeploy: true
+  ports:
+    - 3002:3002
+  environment:
+    - VIRTUAL_HOST=console.vesselstech.com
+  links:
+    - mock-service
 
 mock-service:
   image: lewisdaly/mock-sms-service:latest

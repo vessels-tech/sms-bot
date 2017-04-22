@@ -9,10 +9,10 @@ RUN npm install -g nodemon
 COPY package.json ./
 RUN npm install
 
-# COPY src/ ./src/
 COPY ./ ./
 
-
 EXPOSE 3002
+
+RUN npm run build
 
 CMD ["./entrypoint.sh"]

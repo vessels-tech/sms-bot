@@ -4,7 +4,8 @@
   "description": "sms-ui console",
   "scripts": {
     "dev": "webpack-dev-server --progress --inline",
-    "build": "webpack --progress --watch --host 0.0.0.0"
+    "build": "webpack --progress",
+    "serve": "nodemon index.js"
   },
   "author": "lewis daly, kevin doveton",
   "license": "ISC",

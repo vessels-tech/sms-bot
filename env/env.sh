@@ -13,7 +13,11 @@ if [ -s .env ]; then
   source .env
 else
   echo -e "${yellow}No .env file found. Creating one. Please fill it out.${endColor}"
-  echo -e 'export TOKEN=<INSERT_TOKEN_HERE>\n' > .env
+  echo -e 'export TOKEN=<INSERT_TOKEN_HERE>
+  export MESSENGER_PAGE_ACCESS_TOKEN=<INSERT_MESSENGER_PAGE_ACCESS_TOKEN_HERE>
+  export MESSENGER_APP_SECRET=<INSERT_MESSENGER_APP_SECRET_HERE>
+  export MESSENGER_VALIDATION_TOKEN=<INSERT_MESSENGER_VALIDATION_TOKEN_HERE>
+  ' > .env
 fi
 
 

@@ -1,0 +1,31 @@
+##THIS FILE IS JUST A REFERENCE - docker-cloud.yml should contain all of this stuff...
+
+version: '2'
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+        - "80:80"
+        - "443:443"
+    volumes:
+        - /var/run/docker.sock:/tmp/docker.sock:ro
+        - /certs:/etc/nginx/certs
+        - /etc/nginx/vhost.d
+        - /usr/share/nginx/html
+
+  nginx-letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    container_name: nginx-letsencrypt
+    volumes:
+        - /var/run/docker.sock:/tmp/docker.sock:rw
+        - /var/run/docker.sock:/var/run/docker.sock:ro
+    volumes_from:
+        - nginx-proxy
+    links:
+        - nginx-proxy
+
+  sms-bot:
+    links:
+      - nginx-proxy
+      - nginx-letsencrypt

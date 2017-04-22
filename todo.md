@@ -11,9 +11,11 @@ Overall roadmap:
 - Find some actual customers and on-board them
   - What is the mvp for new customers?
 - Add more integrations
--
+
 
 ##Capture todos here
+
+- make a script for combining the docker-compose.prod.yml files with docker-compose to generate docker-cloud.yml
 
 - fix Thread.handleResponseReceived
   - post response steps
@@ -27,10 +29,7 @@ Overall roadmap:
 
 - Start building manangement console, for adding new queries, etc.
 
-- replace isNullOrUndefined
-
-- write deploy tools with cloudformation, ECS, etc...
-- Continuous Integration...
+- migrate to docker swarm?
 
 
 

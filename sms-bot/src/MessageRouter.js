@@ -18,10 +18,15 @@ const bodyParser = require('body-parser');
 
 const rejectError = require('./utils/utils').rejectError;
 
+// TODO: maybe there is a better way to store this
+const MESSENGER_VALIDATION_TOKEN = process.env.MESSENGER_VALIDATION_TOKEN;
+const FacebookBot = require('./FacebookBot');
+const facebookBot = new FacebookBot(process.env.MESSENGER_PAGE_ACCESS_TOKEN);
 
 const integrationTypes = {
   cli: true,
-  Way2Mint: true
+  Way2Mint: true,
+  facebookBot: true
 };
 
 class MessageRouter {
@@ -41,6 +46,28 @@ class MessageRouter {
       //TODO: authenticate user from token or something
       next();
     });
+    
+    // catch facebookBot webhook authentication request
+    // https://developers.facebook.com/docs/messenger-platform/guides/setup#webhook_setup
+    this.router.use('/incoming/:userId/facebookBot', function(req, res, next) {
+      if (req.method == 'GET') {
+        // get request - probably a auth request
+        if (req.query['hub.mode'] === 'subscribe') {
+          // definitely an auth request
+          if (req.query['hub.verify_token'] === MESSENGER_VALIDATION_TOKEN) {
+            res.status(200).send(req.query['hub.challenge']);
+          } 
+          else {
+            console.error("Failed validation. Make sure the validation tokens match.");
+            res.sendStatus(403);
+          }
+        }
+      } else {
+        // post request - probably a message
+        next();
+      }
+
+    })
   }
 
   setupRoutes() {
@@ -51,7 +78,10 @@ class MessageRouter {
           return this.botApi.handleMessage(messageAndNumber.message, messageAndNumber.number);
         })
         .then(response => {
-          res.send({message:response});
+          // already sent facebook status
+          if(req.params.integrationType != 'facebookBot') {
+            res.send({message:response});
+          }
         })
         .catch(err => {
           console.error(err);
@@ -66,24 +96,42 @@ class MessageRouter {
     });
 
     this.router.post('/incoming/:userId/:integrationType', (req, res) => {
-
+      var senderId = null; // for facebook
       return this.validateParams(req.params)
         .then(() => this.parseMessage(req.body, req.params.integrationType))
         .then(messageAndNumber => {
+          
+          // facebook requires confirmation asap
+          if(req.params.integrationType == 'facebookBot') {
+            res.sendStatus(200);
+            senderId = messageAndNumber.number
+          }
+          
           return this.botApi.handleMessage(messageAndNumber.message, messageAndNumber.number);
         })
         .then(response => {
-          res.send({message:response});
+          // already sent facebook status
+          if(req.params.integrationType == 'facebookBot') {
+            facebookBot.sendTextMessage(senderId, response);
+          }
+          else {
+            res.send({message:response});
+          }
         })
         .catch(err => {
-          console.error(err);
-
-          let statusCode = 500;
-          if (err.statusCode) {
-            statusCode = err.statusCode;
+          if(req.params.integrationType == 'facebookBot') {
+            facebookBot.sendTextMessage(senderId, err.message);
           }
+          else {
+            console.error(err);
 
-          res.status(statusCode).send({message:err.message, status:statusCode});
+            let statusCode = 500;
+            if (err.statusCode) {
+              statusCode = err.statusCode;
+            }
+
+            res.status(statusCode).send({message:err.message, status:statusCode});
+          }
         });
     });
   }
@@ -93,6 +141,7 @@ class MessageRouter {
       return rejectError(400, {message:`unsupported integrationType: ${params.integrationType}`});
     }
 
+    // TODO: more users?
     if (params.userId !== '1') {
       return rejectError(404, {message:`user with userId:${params.userId} not found`});
     }
@@ -100,22 +149,33 @@ class MessageRouter {
     return Promise.resolve(true);
   }
 
-  parseMessage(data, integrationType) {
+  parseMessage(receivedData, integrationType) {
     //TODO: parse the req.data differently based on the integrationType
-
-    if (!data) {
-      return rejectError(400, `data is undefined`);
+    
+    if (!receivedData) {
+      return rejectError(400, `receivedData is undefined`);
     }
 
     let missingParams = [];
-    if (!data.message) {
-      missingParams.push("message");
+    let data = {};
+    
+    // facebook bot is structured differently
+    // format the params
+    if (integrationType == 'facebookBot') {
+      data = facebookBot.formatRequest(receivedData);
     }
+    else {
+      if (!receivedData.message) {
+        missingParams.push("message");
+      }
 
-    if (!data.number) {
-      missingParams.push("number");
+      if (!receivedData.number) {
+        missingParams.push("number");
+      }
+      
+      data = receivedData;
     }
-
+    
     if (missingParams.length > 0) {
       return rejectError(400, `Missing required parameters:${missingParams}`);
     }

@@ -1,18 +1,12 @@
 version: '2'
-
 services:
-  nginx-proxy:
-    image: jwilder/nginx-proxy
-    ports:
-      - 80:80
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock
-
   sms-bot:
     build: ./sms-bot/
     container_name: sms-bot
-    ports:
-      - 3000:3000
+    expose:
+      - 3000
+    # ports:
+      # - 3000:3000
     volumes:
       - ./sms-bot/src/:/usr/src/app/src/
       - ./sms-bot/test/:/usr/src/app/test/
@@ -20,6 +14,12 @@ services:
       - TERM=xterm-256color
       - TOKEN
       - DISABLE_REDIS
+      - MESSENGER_VALIDATION_TOKEN
+      - MESSENGER_PAGE_ACCESS_TOKEN
+      - LETSENCRYPT_HOST=sms.vesselstech.com
+      - LETSENCRYPT_EMAIL=kevindoveton@me.com
+      - HTTPS_METHOD=redirect
+      - VIRTUAL_PORT=3000
       - VIRTUAL_HOST=sms.vesselstech.com
     links:
       - redis
@@ -27,6 +27,7 @@ services:
 
   sms-ui:
     build: ./sms-ui/
+    command: './run_dev.sh'
     ports:
       - 3002:3002
     volumes:

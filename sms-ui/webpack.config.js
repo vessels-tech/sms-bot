@@ -4,7 +4,7 @@ const path = require('path'),
 module.exports = {
   devtool: 'source-map',
   entry: [
-    'webpack-dev-server/client?http://0.0.0.0:80',
+    'webpack-dev-server/client?http://0.0.0.0:3002',
     'webpack/hot/dev-server',
     'whatwg-fetch',
     path.resolve(__dirname, './src/js/main.js'),
@@ -42,6 +42,6 @@ module.exports = {
     hot: true,
     outputPath: path.join(__dirname, '/dist'),
     host: "0.0.0.0",
-    port: 80
+    port: 3002
   }
 };

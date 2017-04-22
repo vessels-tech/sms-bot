@@ -1,13 +1,5 @@
 version: '2'
-
 services:
-  nginx-proxy:
-    image: jwilder/nginx-proxy
-    ports:
-      - 80:80
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock
-
   sms-bot:
     build: ./sms-bot/
     container_name: sms-bot
@@ -32,11 +24,10 @@ services:
     links:
       - redis
       - mock-service
-      - nginx-proxy
-      - nginx-letsencrypt
 
   sms-ui:
     build: ./sms-ui/
+    command: './run_dev.sh'
     ports:
       - 3002:3002
     volumes:
@@ -57,29 +48,6 @@ services:
       - VIRTUAL_HOST=mock-service.vesselstech.com
     links:
       - mongo
-
-  nginx-proxy:
-    image: jwilder/nginx-proxy
-    container_name: nginx-proxy
-    ports:
-        - "80:80"
-        - "443:443"
-    volumes:
-        - /var/run/docker.sock:/tmp/docker.sock:ro
-        - /certs:/etc/nginx/certs
-        - /etc/nginx/vhost.d
-        - /usr/share/nginx/html
-
-  nginx-letsencrypt:
-    image: jrcs/letsencrypt-nginx-proxy-companion
-    container_name: nginx-letsencrypt
-    volumes:
-        - /var/run/docker.sock:/tmp/docker.sock:rw
-        - /var/run/docker.sock:/var/run/docker.sock:ro
-    volumes_from:
-        - nginx-proxy
-    links:
-        - nginx-proxy
 
   mongo:
     image: mongo:3.4.3

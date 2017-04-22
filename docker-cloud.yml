@@ -1,25 +1,59 @@
+nginx-proxy:
+  image: jwilder/nginx-proxy
+  ports:
+    - 80:80
+    - 443:443
+  volumes:
+    - /var/run/docker.sock:/tmp/docker.sock
+    - /certs:/etc/nginx/certs
+    - /nginx/vhost.d:/etc/nginx/vhost.d
+    - /nginx/html:/usr/share/nginx/html
+
+nginx-letsencrypt:
+  image: jrcs/letsencrypt-nginx-proxy-companion
+  volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+  volumes_from:
+      - nginx-proxy
+  links:
+      - nginx-proxy
+
 sms-bot:
   image: lewisdaly/sms-bot:latest
   autoredeploy: true
   ports:
-    - 80:3000
+    - 3000:3000
   environment:
     - "TERM=xterm-256color"
     - "TOKEN="
     - "DISABLE_REDIS=false"
+    - VIRTUAL_HOST=sms.vesselstech.com
+    - LETSENCRYPT_HOST=sms.vesselstech.com
+    - LETSENCRYPT_EMAIL=kevindoveton@me.com
+    - HTTPS_METHOD=redirect
+    - VIRTUAL_PORT=3000
   links:
     - redis
 
 mock-service:
-  image: lewisdaly/mock-service:latest
+  image: lewisdaly/mock-sms-service:latest
   autoredeploy: true
   ports:
     - 3001:3001
+  environment:
+    - VIRTUAL_HOST=mock-service.vesselstech.com
+    - LETSENCRYPT_HOST=mock-service.vesselstech.com
+    - LETSENCRYPT_EMAIL=kevindoveton@me.com
+    - HTTPS_METHOD=redirect
+    - VIRTUAL_PORT=3001
   links:
-    - mongo  
+    - mongo
 
 mongo:
   image: mongo:3.4.3
+  volumes:
+    - /usr/src/.mongo:/data/db
 
 redis:
   image: redis:3.0

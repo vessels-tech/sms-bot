@@ -1,6 +1,13 @@
 version: '2'
 
 services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - 80:80
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+
   sms-bot:
     build: ./sms-bot/
     container_name: sms-bot
@@ -12,21 +19,32 @@ services:
       - ./sms-bot/src/:/usr/src/app/src/
       - ./sms-bot/test/:/usr/src/app/test/
     environment:
-      - "TERM=xterm-256color"
+      - TERM=xterm-256color
       - TOKEN
       - DISABLE_REDIS
       - MESSENGER_VALIDATION_TOKEN
       - MESSENGER_PAGE_ACCESS_TOKEN
-      - VIRTUAL_HOST=dev1.kdoveton.com
-      - LETSENCRYPT_HOST=dev1.kdoveton.com
+      - LETSENCRYPT_HOST=sms.vesselstech.com
       - LETSENCRYPT_EMAIL=kevindoveton@me.com
       - HTTPS_METHOD=redirect
       - VIRTUAL_PORT=3000
+      - VIRTUAL_HOST=sms.vesselstech.com
     links:
       - redis
       - mock-service
       - nginx-proxy
       - nginx-letsencrypt
+
+  sms-ui:
+    build: ./sms-ui/
+    ports:
+      - 3002:3002
+    volumes:
+      - ./sms-ui/:/usr/src/app/
+    environment:
+      - VIRTUAL_HOST=console.vesselstech.com
+    links:
+      - mock-service
 
   mock-service:
     build: './mock-service/'
@@ -35,6 +53,8 @@ services:
       - 3001:3001
     volumes:
       - ./mock-service/:/usr/src/app/
+    environment:
+      - VIRTUAL_HOST=mock-service.vesselstech.com
     links:
       - mongo
 

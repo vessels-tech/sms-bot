@@ -29,6 +29,10 @@ app.set('config', {
 const messageRouter = new MessageRouter(express, botApi);
 app.use(messageRouter.getRouter());
 
+app.get('/', (req, res) => {
+  res.status(200).send({message:'sms-bot up and running'});
+});
+
 app.listen(3000, function () {
   console.log('sms-bot listening on port 3000!');
 });

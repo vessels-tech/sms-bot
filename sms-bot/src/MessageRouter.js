@@ -52,15 +52,13 @@ class MessageRouter {
 
 
     //TODO: we should make a separate middleware for auth, that doesn't get confused with the incoming message
-    this.router.use('/auth/facebookBot', function(req, res, next) {
+    this.router.use('/incoming/1/facebookBot', function(req, res, next) {
       if (req.method == 'GET') {
-        console.log(JSON.stringify(req.query['hub.mode']));
-
         if (req.query['hub.mode'] === 'subscribe' && req.query['hub.verify_token'] === MESSENGER_VALIDATION_TOKEN) {
           res.status(200).send(req.query['hub.challenge']);
           return next();
         }
-          
+
         console.error("Failed validation. Make sure the validation tokens match.");
         res.sendStatus(403);
         return next();

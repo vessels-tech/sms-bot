@@ -13,11 +13,8 @@
 MESSAGE=`node -p "encodeURIComponent('$1')"`
 echo $MESSAGE
 # curl "localhost:3000/incoming/1/cli?number=0404404404&message=$MESSAGE"
-<<<<<<< HEAD
 # curl "https://dev1.kdoveton.com/incoming/1/cli?number=0404404404&message=$MESSAGE"
-=======
 curl "sms-bot.test-stack.41304d9c.svc.dockerapp.io:3000/incoming/1/cli?number=0404404404&message=$MESSAGE"
->>>>>>> master
 
 # MESSAGE=\"$1\"
 # echo $MESSAGE

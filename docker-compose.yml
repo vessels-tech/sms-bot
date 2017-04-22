@@ -35,6 +35,8 @@ services:
       - 3001:3001
     volumes:
       - ./mock-service/:/usr/src/app/
+    links:
+      - mongo
 
   nginx-proxy:
     image: jwilder/nginx-proxy
@@ -47,7 +49,7 @@ services:
         - /certs:/etc/nginx/certs
         - /etc/nginx/vhost.d
         - /usr/share/nginx/html
-  
+
   nginx-letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion
     container_name: nginx-letsencrypt
@@ -58,6 +60,11 @@ services:
         - nginx-proxy
     links:
         - nginx-proxy
+
+  mongo:
+    image: mongo:3.4.3
+    volumes:
+      - ./.mongo:/data/db
 
   redis:
     image: redis:3.0

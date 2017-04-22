@@ -9,8 +9,10 @@ RUN npm install -g nodemon
 COPY package.json ./
 RUN npm install
 
-COPY src/ ./src/
+# COPY src/ ./src/
+COPY ./ ./
 
-EXPOSE 80
 
-CMD ["./run_local.sh"]
+EXPOSE 3002
+
+CMD ["./entrypoint.sh"]

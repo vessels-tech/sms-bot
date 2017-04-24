@@ -28,7 +28,7 @@ describe('ConversationDelegate tests', () => {
   //TODO: mock mongodb
   it.only('logs to mongodb', () => {
     console.log("log to mongodb");
-    conversationDelegate.logConversation({test:1234});
+    conversationDelegate.logConversation({reading:1234, postcode:313506});
   });
 
 });

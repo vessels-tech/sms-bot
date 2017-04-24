@@ -1,7 +1,7 @@
+import { SMS_BOT_BASE_API } from '../env';
 
-//TODO: set baseurl from webpack env
 const baseOptions = {
-  baseUrl: 'http://localhost:3000',
+  baseUrl: SMS_BOT_BASE_API,
   headers: [
     { key:'Content-type', value: 'application/json'}
   ]

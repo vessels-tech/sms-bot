@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "4fe45a8c2099dec95e81"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "2e7a07c7aaae086d21c5"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -8954,7 +8954,7 @@
 	
 	var _App2 = _interopRequireDefault(_App);
 	
-	__webpack_require__(277);
+	__webpack_require__(279);
 	
 	__webpack_require__(78);
 	
@@ -8962,7 +8962,7 @@
 	
 	(0, _reactDom.render)(_react2.default.createElement(_App2.default, null), document.querySelector("#react-mount"));
 	
-	/* REACT HOT LOADER */ }).call(this); } finally { if (true) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = __webpack_require__(274); if (makeExportsHot(module, __webpack_require__(179))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot apply hot update to " + "main.js" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
+	/* REACT HOT LOADER */ }).call(this); } finally { if (true) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = __webpack_require__(276); if (makeExportsHot(module, __webpack_require__(179))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot apply hot update to " + "main.js" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)(module)))
 
 /***/ },
@@ -30931,6 +30931,8 @@
 	  value: true
 	});
 	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	var _react = __webpack_require__(179);
@@ -30941,9 +30943,9 @@
 	
 	var _reactDropzone2 = _interopRequireDefault(_reactDropzone);
 	
-	var _whatwgFetch = __webpack_require__(78);
+	var _SMSBotService = __webpack_require__(274);
 	
-	var _whatwgFetch2 = _interopRequireDefault(_whatwgFetch);
+	var _SMSBotService2 = _interopRequireDefault(_SMSBotService);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -30962,103 +30964,143 @@
 	    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 	
 	    _this.state = {
-	      preview: null
+	      serviceId: null,
+	      integrationType: null,
+	      incomingUrl: null,
+	      outgoingUrl: null,
+	      logs: []
 	    };
 	    return _this;
 	  }
 	
 	  _createClass(App, [{
-	    key: 'onDrop',
-	    value: function onDrop(files) {
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this.fetchServiceConfiguration();
+	      this.fetchServiceLogs();
+	    }
+	  }, {
+	    key: 'fetchServiceConfiguration',
+	    value: function fetchServiceConfiguration() {
 	      var _this2 = this;
 	
-	      var reader = new FileReader();
-	
-	      console.log('files', files);
-	      if (!files) {
-	        return;
-	      }
-	
-	      var preview = files[0].preview;
-	      console.log("preview", preview);
-	      this.setState({
-	        preview: preview
-	      });
-	
-	      this.toDataURL(preview).then(function (base64File) {
-	        console.log("base64Data:", base64File);
-	        return _this2.apiClassify(base64File.split(",")[1]);
+	      //TODO: load these from path params - need to implement react router
+	      return _SMSBotService2.default.fetchServiceConfiguration("1").then(function (_service) {
+	        _this2.setState(_extends({}, _this2.state, _service));
 	      });
 	    }
 	  }, {
-	    key: 'getPreview',
-	    value: function getPreview() {
-	      if (!this.state.preview) {
+	    key: 'fetchServiceLogs',
+	    value: function fetchServiceLogs() {
+	      var _this3 = this;
+	
+	      //TODO: load these from path params - need to implement react router
+	      return _SMSBotService2.default.fetchServiceLogs("1").then(function (_logs) {
+	        _this3.setState(_extends({}, _this3.state, {
+	          logs: _logs
+	        }));
+	      });
+	    }
+	  }, {
+	    key: 'getIncomingPanel',
+	    value: function getIncomingPanel() {
+	      var _state = this.state,
+	          integrationType = _state.integrationType,
+	          incomingUrl = _state.incomingUrl;
+	
+	      if (!integrationType || !incomingUrl) {
 	        return null;
 	      }
 	
-	      return _react2.default.createElement('img', { src: this.state.preview });
-	    }
-	  }, {
-	    key: 'toDataURL',
-	    value: function toDataURL(url) {
-	      return new Promise(function (resolve, reject) {
-	        var xhr = new XMLHttpRequest();
-	        xhr.onload = function () {
-	          var reader = new FileReader();
-	          reader.onloadend = function () {
-	            resolve(reader.result);
-	          };
-	          reader.readAsDataURL(xhr.response);
-	        };
-	        xhr.open('GET', url);
-	        xhr.responseType = 'blob';
-	        xhr.send();
-	      });
-	    }
-	  }, {
-	    key: 'apiClassify',
-	    value: function apiClassify(base64Image) {
-	      var url = 'http://lewd.local:8080/classify/';
-	
-	      var xhr = new XMLHttpRequest();
-	      xhr.open("POST", url, true);
-	      //Send the proper header information along with the request
-	      xhr.setRequestHeader("Content-type", "application/json");
-	      xhr.setRequestHeader("Authorization", "Token df0b88dce8e9f7ee1104c77c37df116e2e2525ee");
-	
-	      xhr.onreadystatechange = function () {
-	        //Call a function when the state changes.
-	        if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
-	          // Request finished. Do processing here.
-	          var response = JSON.parse(this.responseText);
-	          console.log(response);
-	          window.alert('Results: ' + this.responseText);
-	        }
-	      };
-	      xhr.onerror = function () {
-	        console.log("error!");
-	      };
-	      xhr.send(JSON.stringify({
-	        image: base64Image
-	      }));
-	    }
-	  }, {
-	    key: 'getDropzone',
-	    value: function getDropzone() {
-	      var _this3 = this;
-	
 	      return _react2.default.createElement(
-	        _reactDropzone2.default,
-	        { onDrop: function onDrop(files) {
-	            return _this3.onDrop(files);
-	          }, multiple: false },
+	        'div',
+	        null,
 	        _react2.default.createElement(
-	          'div',
+	          'p',
 	          null,
-	          'Drop or select a .jpeg file to upload!.'
+	          'Integration Type:'
+	        ),
+	        _react2.default.createElement(
+	          'h4',
+	          null,
+	          integrationType
+	        ),
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          'Incoming Url:'
+	        ),
+	        _react2.default.createElement(
+	          'h4',
+	          null,
+	          incomingUrl
 	        )
 	      );
+	    }
+	  }, {
+	    key: 'getOutgoingPanel',
+	    value: function getOutgoingPanel() {
+	      var outgoingUrl = this.state.outgoingUrl;
+	
+	
+	      if (!outgoingUrl) {
+	        return null;
+	      }
+	
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          'Outgoing Url:'
+	        ),
+	        _react2.default.createElement(
+	          'h4',
+	          null,
+	          outgoingUrl
+	        )
+	      );
+	    }
+	  }, {
+	    key: 'getLogItem',
+	    value: function getLogItem(log) {
+	      return _react2.default.createElement(
+	        'div',
+	        { key: log._id },
+	        _react2.default.createElement(
+	          'p',
+	          null,
+	          log.method,
+	          ', ',
+	          log.time,
+	          ', ',
+	          JSON.stringify(log.entities)
+	        )
+	      );
+	    }
+	  }, {
+	    key: 'getLogPanel',
+	    value: function getLogPanel() {
+	      var _this4 = this;
+	
+	      var logs = this.state.logs;
+	
+	      if (logs.length === 0) {
+	        return _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(
+	            'p',
+	            null,
+	            'No logs have been recorded for this service'
+	          )
+	        );
+	      }
+	
+	      return logs.map(function (log) {
+	        return _this4.getLogItem(log);
+	      });
 	    }
 	  }, {
 	    key: 'render',
@@ -31069,15 +31111,11 @@
 	        _react2.default.createElement(
 	          'h1',
 	          null,
-	          'Welcome to EweTube'
+	          'Welcome to Bare Bones Console'
 	        ),
-	        _react2.default.createElement(
-	          'p',
-	          null,
-	          'Upload a picture to get started'
-	        ),
-	        this.getDropzone(),
-	        this.getPreview()
+	        this.getIncomingPanel(),
+	        this.getOutgoingPanel(),
+	        this.getLogPanel()
 	      );
 	    }
 	  }]);
@@ -31087,7 +31125,7 @@
 	
 	exports.default = App;
 	
-	/* REACT HOT LOADER */ }).call(this); } finally { if (true) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = __webpack_require__(274); if (makeExportsHot(module, __webpack_require__(179))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot apply hot update to " + "App.js" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
+	/* REACT HOT LOADER */ }).call(this); } finally { if (true) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = __webpack_require__(276); if (makeExportsHot(module, __webpack_require__(179))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot apply hot update to " + "App.js" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)(module)))
 
 /***/ },
@@ -31961,10 +31999,159 @@
 /* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* WEBPACK VAR INJECTION */(function(module) {/* REACT HOT LOADER */ if (true) { (function () { var ReactHotAPI = __webpack_require__(80), RootInstanceProvider = __webpack_require__(88), ReactMount = __webpack_require__(90), React = __webpack_require__(179); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
+	
 	'use strict';
 	
-	var isReactClassish = __webpack_require__(275),
-	    isReactElementish = __webpack_require__(276);
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _env = __webpack_require__(275);
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var baseOptions = {
+	  baseUrl: _env.SMS_BOT_BASE_API,
+	  headers: [{ key: 'Content-type', value: 'application/json' }]
+	  // baseUrl: 'https:sms.vesselstech.com'
+	};
+	
+	var SMSBotService = function () {
+	  function SMSBotService() {
+	    _classCallCheck(this, SMSBotService);
+	  }
+	
+	  _createClass(SMSBotService, null, [{
+	    key: 'fetchServiceConfiguration',
+	    value: function fetchServiceConfiguration(serviceId) {
+	      var options = {
+	        uri: '/console/service/:serviceId',
+	        qs: {
+	          ":serviceId": serviceId
+	        }
+	      };
+	      return this.getRequest(options).catch(function (err) {
+	        console.log("Err fetchServiceConfiguration", err);
+	      });
+	    }
+	  }, {
+	    key: 'fetchServiceLogs',
+	    value: function fetchServiceLogs(serviceId) {
+	      var options = {
+	        uri: '/console/service/:serviceId/logs',
+	        qs: {
+	          ":serviceId": serviceId
+	        }
+	      };
+	      return this.getRequest(options).catch(function (err) {
+	        console.log("Err fetchServiceLogs", err);
+	      });
+	    }
+	  }, {
+	    key: 'getRequest',
+	    value: function getRequest(options) {
+	      var _this = this;
+	
+	      return new Promise(function (resolve, reject) {
+	        var xhr = new XMLHttpRequest();
+	
+	        var url = baseOptions.baseUrl + _this.parseQueryArguments(options.uri, options.qs) + _this.parseRequestParams(options.params);
+	        xhr.open('GET', url);
+	
+	        baseOptions.headers.forEach(function (header) {
+	          return xhr.setRequestHeader(header.key, header.value);
+	        });
+	
+	        xhr.onreadystatechange = function () {
+	          //Call a function when the state changes.
+	          if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+	            resolve(JSON.parse(xhr.responseText));
+	          }
+	        };
+	
+	        xhr.onerror = function (err) {
+	          reject(err);
+	        };
+	        xhr.send(null);
+	      });
+	    }
+	
+	    /**
+	     * Convert a dict of arguments to a pretty urlencoded string
+	     */
+	
+	  }, {
+	    key: 'parseRequestParams',
+	    value: function parseRequestParams(params) {
+	      if (!params) {
+	        return "";
+	      }
+	
+	      var string = Object.keys(params).reduce(function (acc, key, idx) {
+	        var firstChar = '?';
+	        if (idx != 0) {
+	          firstChar = '&';
+	        }
+	        return acc + ('' + firstChar + key + '=' + params[key]);
+	      }, "");
+	
+	      return encodeURI(string);
+	    }
+	
+	    /**
+	     * Use find and replace to fill in the query params
+	     */
+	
+	  }, {
+	    key: 'parseQueryArguments',
+	    value: function parseQueryArguments(uri, query) {
+	      var string = Object.keys(query).reduce(function (acc, key) {
+	        acc = acc.replace(key, query[key]);
+	        return acc;
+	      }, uri);
+	
+	      return string;
+	    }
+	  }]);
+	
+	  return SMSBotService;
+	}();
+	
+	exports.default = SMSBotService;
+	
+	/* REACT HOT LOADER */ }).call(this); } finally { if (true) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = __webpack_require__(276); if (makeExportsHot(module, __webpack_require__(179))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot apply hot update to " + "SMSBotService.js" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)(module)))
+
+/***/ },
+/* 275 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(module) {/* REACT HOT LOADER */ if (true) { (function () { var ReactHotAPI = __webpack_require__(80), RootInstanceProvider = __webpack_require__(88), ReactMount = __webpack_require__(90), React = __webpack_require__(179); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
+	
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	/* Define env vars here. Webpack finds and replaces them */
+	
+	var SMS_BOT_BASE_API = exports.SMS_BOT_BASE_API = (lewisisthebest);
+	
+	/* REACT HOT LOADER */ }).call(this); } finally { if (true) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = __webpack_require__(276); if (makeExportsHot(module, __webpack_require__(179))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot apply hot update to " + "env.js" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)(module)))
+
+/***/ },
+/* 276 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var isReactClassish = __webpack_require__(277),
+	    isReactElementish = __webpack_require__(278);
 	
 	function makeExportsHot(m, React) {
 	  if (isReactElementish(m.exports, React)) {
@@ -32018,7 +32205,7 @@
 
 
 /***/ },
-/* 275 */
+/* 277 */
 /***/ function(module, exports) {
 
 	function hasRender(Class) {
@@ -32068,10 +32255,10 @@
 	module.exports = isReactClassish;
 
 /***/ },
-/* 276 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isReactClassish = __webpack_require__(275);
+	var isReactClassish = __webpack_require__(277);
 	
 	function isReactElementish(obj, React) {
 	  if (!obj) {
@@ -32085,23 +32272,23 @@
 	module.exports = isReactElementish;
 
 /***/ },
-/* 277 */
+/* 279 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(278);
+	var content = __webpack_require__(280);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(280)(content, {});
+	var update = __webpack_require__(282)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(true) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept(278, function() {
-				var newContent = __webpack_require__(278);
+			module.hot.accept(280, function() {
+				var newContent = __webpack_require__(280);
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -32111,10 +32298,10 @@
 	}
 
 /***/ },
-/* 278 */
+/* 280 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(279)();
+	exports = module.exports = __webpack_require__(281)();
 	// imports
 	exports.push([module.id, "@import url(https://fonts.googleapis.com/css?family=Open+Sans);", ""]);
 	
@@ -32125,7 +32312,7 @@
 
 
 /***/ },
-/* 279 */
+/* 281 */
 /***/ function(module, exports) {
 
 	/*
@@ -32181,7 +32368,7 @@
 
 
 /***/ },
-/* 280 */
+/* 282 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*

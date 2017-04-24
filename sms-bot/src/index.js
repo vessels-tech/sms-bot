@@ -11,7 +11,6 @@ const MongoHelper = require('./utils/MongoHelper');
 const app = express();
 app.use(bodyParser.json());
 
-
 /* configure all of the things */
 const BotApi = require('./api/BotApi');
 
@@ -30,25 +29,6 @@ conversationRouter.registerConversationDelegate(queryReadingDelegate);
 
 const botApi = new BotApi(app);
 
-const config = {
-  botApi: botApi,
-  conversationRouter: conversationRouter,
-  mongoClient: MongoHelper.mongoConnect(),
-};
-
-//Express' app objects can access this
-app.set('config', config);
-
-/* Create and register routers */
-const messageRouter = new MessageRouter(express, config);
-const consoleRouter = new ConsoleRouter(config);
-app.use(messageRouter.getRouter());
-app.use(consoleRouter.getRouter());
-
-
-app.use('*', (req, res, next) => {
-  console.log("HEY THERE");
-});
 
 /* Error handling */
 app.use(function (err, req, res, next) {
@@ -73,3 +53,24 @@ app.get('/', (req, res) => {
 app.listen(3000, function () {
   console.log('sms-bot listening on port 3000!');
 });
+
+
+// TODO: tidy in better config step
+
+return MongoHelper.mongoConnect()
+  .then(_mongoClient => {
+    const config = {
+      botApi: botApi,
+      conversationRouter: conversationRouter,
+      mongoClient: _mongoClient,
+    };
+    //Express' app objects can access this
+    app.set('config', config);
+
+    /* Create and register routers */
+    const messageRouter = new MessageRouter(express, config);
+    const consoleRouter = new ConsoleRouter(config);
+    console.log("configuring routers");
+    app.use(messageRouter.getRouter());
+    app.use(consoleRouter.getRouter());
+  });

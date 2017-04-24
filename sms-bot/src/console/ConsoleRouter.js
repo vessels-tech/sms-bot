@@ -61,11 +61,10 @@ class ConsoleRouter {
     /**
      * Get the logs for a given service
      */
-    this.router.get('/consoles/service/:serviceId/logs', (req, res) => {
+    this.router.get('/console/service/:serviceId/logs', (req, res) => {
       const mongoClient = this.getMongoClient();
 
       return mongoClient.collection('readings').find().toArray((err, docs) => {
-        console.log("found mongo docs", docs);
         res.status(200).send(docs);
       });
     });

@@ -4,16 +4,6 @@ import SMSBotService from '../services/SMSBotService';
 
 
 class App extends Component {
-
-  // static propTypes = {
-  //   service: PropTypes.shape({
-  //     serviceId: PropTypes.string,
-  //     integrationType: PropTypes.string,
-  //     incomingUrl: PropTypes.string,
-  //     outgoingUrl: PropTypes.string,
-  //   }),
-  // }
-
   constructor(props) {
     super(props);
 
@@ -84,6 +74,14 @@ class App extends Component {
     );
   }
 
+  getLogItem(log) {
+    return (
+      <div key={log._id}>
+        <p>{log.method}, {log.time}, {JSON.stringify(log.entities)}</p>
+      </div>
+    );
+  }
+
   getLogPanel() {
     const { logs } = this.state;
     if (logs.length === 0) {
@@ -93,6 +91,8 @@ class App extends Component {
         </div>
       );
     }
+
+    return logs.map(log => this.getLogItem(log));
   }
 
   render() {

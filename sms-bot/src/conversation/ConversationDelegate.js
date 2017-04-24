@@ -94,9 +94,8 @@ class ConversationDelegate {
     let saveObject = {
       method:'queryReading',
       time: new Date(),
+      entities: entities
     };
-
-    saveObject = Object.assign(saveObject, entities);
 
     return mongoClient.collection('readings').insertOne(saveObject)
     //We don't care if this fails, still continue responding to user

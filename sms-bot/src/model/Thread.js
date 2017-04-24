@@ -28,7 +28,7 @@ const desiredEntities = {
   },
   queryReading: {
     resourceId: true,
-    pindcode: true
+    pincode: true
   }
 };
 

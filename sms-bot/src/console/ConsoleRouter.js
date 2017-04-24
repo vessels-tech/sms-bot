@@ -12,11 +12,11 @@ const rejectError = require('../utils/utils').rejectError;
  */
 class ConsoleRouter {
 
-  constructor(botApi) {
+  constructor(config) {
     this.router = require('express-promise-router')()
     this.router.use(bodyParser.json());
 
-    this.botApi = botApi;
+    this.config = config;
     this.setupMiddleware();
     this.setupRoutes();
   }
@@ -42,7 +42,7 @@ class ConsoleRouter {
       const service = {
         serviceId: req.query.serviceId,
         integrationType: 'facebookBot',
-        incomingUrl: 'https://sms.vesselstech.com/1/facebookBot',
+        incomingUrl: `https://sms.vesselstech.com/${req.query.serviceId}/facebookBot`,
         outgoingUrl: 'https:/the.url/of/your/service'
       };
 
@@ -62,12 +62,21 @@ class ConsoleRouter {
      * Get the logs for a given service
      */
     this.router.get('/consoles/service/:serviceId/logs', (req, res) => {
+      const mongoClient = this.getMongoClient();
 
+      return mongoClient.collection('readings').find().toArray((err, docs) => {
+        console.log("found mongo docs", docs);
+        res.status(200).send(docs);
+      });
     });
   }
 
   getRouter() {
     return this.router;
+  }
+
+  getMongoClient() {
+    return this.config.mongoClient;
   }
 }
 

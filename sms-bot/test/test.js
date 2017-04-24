@@ -10,10 +10,14 @@ describe('sms-bot tests', () => {
     });
   });
 
+  describe('Conversation Tests', () => {
+    require('./conversation/ConversationDelegate');
+  });
+
   describe('Api Tests', () => {
     require('./api/ServiceApi');
   });
-  
+
   describe('Util Tests', () => {
     require('./utils/Utils');
   })

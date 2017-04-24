@@ -93,12 +93,9 @@ class App extends Component {
         </div>
       );
     }
-    
   }
 
   render() {
-    console.log("Rendering");
-
     return (
       <div>
         <h1>Welcome to Bare Bones Console</h1>

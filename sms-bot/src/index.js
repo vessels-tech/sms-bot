@@ -6,6 +6,7 @@ const MessageRouter = require('./MessageRouter');
 const ConsoleRouter = require('./console/ConsoleRouter');
 const ConversationDelegate = require('./conversation/ConversationDelegate');
 const ConversationRouter = require('./conversation/ConversationRouter');
+const MongoHelper = require('./utils/MongoHelper');
 
 const app = express();
 app.use(bodyParser.json());
@@ -28,14 +29,19 @@ conversationRouter.registerConversationDelegate(saveReadingDelegate);
 conversationRouter.registerConversationDelegate(queryReadingDelegate);
 
 const botApi = new BotApi(app);
-app.set('config', {
+
+const config = {
   botApi: botApi,
   conversationRouter: conversationRouter,
-});
+  mongoClient: MongoHelper.mongoConnect(),
+};
+
+//Express' app objects can access this
+app.set('config', config);
 
 /* Create and register routers */
-const messageRouter = new MessageRouter(express, botApi);
-const consoleRouter = new ConsoleRouter(botApi);
+const messageRouter = new MessageRouter(express, config);
+const consoleRouter = new ConsoleRouter(config);
 app.use(messageRouter.getRouter());
 app.use(consoleRouter.getRouter());
 

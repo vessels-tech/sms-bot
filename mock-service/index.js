@@ -24,7 +24,6 @@ const app = express();
 app.use(bodyParser.json());
 let mongo = null;
 
-
 app.post('/saveReading', (req, res) => {
   let saveObject = {
     method:'saveReading',

@@ -18,7 +18,8 @@
   "homepage": "https://github.com/vessels-tech/sms-bot#readme",
   "dependencies": {
     "body-parser": "^1.17.1",
-    "express": "^4.15.2",
+    "express": "4.15.2",
+    "express-promise-router": "^1.1.1",
     "redis": "^2.7.1",
     "request": "^2.81.0",
     "request-promise": "^4.2.0",

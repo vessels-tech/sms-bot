@@ -23,11 +23,7 @@ const MESSENGER_VALIDATION_TOKEN = process.env.MESSENGER_VALIDATION_TOKEN;
 const FacebookBot = require('./FacebookBot');
 const facebookBot = new FacebookBot(process.env.MESSENGER_PAGE_ACCESS_TOKEN);
 
-const integrationTypes = {
-  cli: true,
-  Way2Mint: true,
-  facebookBot: true
-};
+const integrationTypes = require('./utils/enums').IntegrationTypes;
 
 class MessageRouter {
   constructor(express, botApi) {

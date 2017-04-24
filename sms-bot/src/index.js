@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const MessageRouter = require('./MessageRouter');
+const ConsoleRouter = require('./console/ConsoleRouter');
 const ConversationDelegate = require('./conversation/ConversationDelegate');
 const ConversationRouter = require('./conversation/ConversationRouter');
 
@@ -12,6 +13,13 @@ app.use(bodyParser.json());
 
 /* configure all of the things */
 const BotApi = require('./api/BotApi');
+
+/* Setup CORS */
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 const conversationRouter = new ConversationRouter(app);
 const saveReadingDelegate = new ConversationDelegate(app, 'saveReading');
@@ -25,9 +33,32 @@ app.set('config', {
   conversationRouter: conversationRouter,
 });
 
-//TODO: find better way to dependency inject this one...
+/* Create and register routers */
 const messageRouter = new MessageRouter(express, botApi);
+const consoleRouter = new ConsoleRouter(botApi);
 app.use(messageRouter.getRouter());
+app.use(consoleRouter.getRouter());
+
+
+app.use('*', (req, res, next) => {
+  console.log("HEY THERE");
+});
+
+/* Error handling */
+app.use(function (err, req, res, next) {
+  if (!err.statusCode) {
+    return next(err);
+  }
+
+  console.error(err.stack);
+  res.status(err.statusCode).send({message:err.message, status:err.statusCode});
+});
+
+app.use(function (err, req, res, next) {
+  console.error(err.stack);
+  res.status(500).send({message:err.message, status:500});
+});
+
 
 app.get('/', (req, res) => {
   res.status(200).send({message:'sms-bot up and running'});

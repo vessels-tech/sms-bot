@@ -26,7 +26,7 @@ app.set('config', {
 });
 
 //TODO: find better way to dependency inject this one...
-const messageRouter = new MessageRouter(express, botApi);
+const messageRouter = new MessageRouter(botApi);
 app.use(messageRouter.getRouter());
 
 app.get('/', (req, res) => {

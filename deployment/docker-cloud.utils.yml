@@ -1,2 +1,2 @@
-data-container:
-  image: lewisdaly/data-container:latest
+volume-container:
+  image: lewisdaly/volume-container:latest

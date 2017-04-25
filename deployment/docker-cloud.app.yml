@@ -45,6 +45,8 @@ sms-ui:
     - 3002:3002
   environment:
     - VIRTUAL_HOST=console.vesselstech.com
+    - LETSENCRYPT_HOST=console.vesselstech.com
+    - LETSENCRYPT_EMAIL=kevindoveton@me.com
   links:
     - mock-service
 
@@ -64,8 +66,8 @@ mock-service:
 
 mongo:
   image: mongo:3.4.3
-  volumes:
-    - /usr/src/.mongo:/data/db
+  volumes_from:
+    - volume-container.sms-volumes:/data/db
 
 redis:
   image: redis:3.0

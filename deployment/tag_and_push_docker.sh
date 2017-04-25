@@ -2,18 +2,23 @@
 
 echo 'Make sure you are logged in, with docker login'
 
+dirname=$(echo ${PWD##*/} | sed 's/-//g')
+
 function sms-bot() {
-  docker tag vesselssmsbot_sms-bot lewisdaly/sms-bot:latest
+  name=_sms-bot
+  docker tag $dirname$name lewisdaly/sms-bot:latest
   docker push lewisdaly/sms-bot:latest
 }
 
 function sms-mock-service() {
-  docker tag vesselssmsbot_mock-service lewisdaly/sms-mock-service:latest
+  name=_mock-service
+  docker tag $dirname$name lewisdaly/sms-mock-service:latest
   docker push lewisdaly/sms-mock-service:latest
 }
 
 function sms-bot-ui() {
-  docker tag vesselssmsbot_sms-ui lewisdaly/sms-bot-ui:latest
+  name=_sms-ui
+  docker tag $dirname$name lewisdaly/sms-bot-ui:latest
   docker push lewisdaly/sms-bot-ui:latest
 }
 
@@ -31,15 +36,15 @@ case $1 in
     sms-utils
     ;;
   sms-bot)
-    docker-compose build
+    docker-compose build sms-bot
     sms-bot
     ;;
   sms-mock-service)
-    docker-compose build
+    docker-compose build sms-mock-service
     sms-mock-service
     ;;
   sms-bot-ui)
-    docker-compose build
+    docker-compose build sms-bot-ui
     sms-bot-ui
     ;;
   sms-utils)

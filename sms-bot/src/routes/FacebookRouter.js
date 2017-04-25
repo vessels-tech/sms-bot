@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const validateParams = require('./utils').validateParams;
+const rejectError = require('../utils/utils').rejectError;
 
 // TODO: maybe there is a better way to store this
 const MESSENGER_VALIDATION_TOKEN = process.env.MESSENGER_VALIDATION_TOKEN;
@@ -9,6 +10,7 @@ const facebookBot = new FacebookBot(process.env.MESSENGER_PAGE_ACCESS_TOKEN);
 class FacebookRouter {
   constructor(botApi) {
     this.router = router;
+    this.botApi = botApi
     this.setupAuth();
     this.setupPostRoute();
   }
@@ -29,13 +31,17 @@ class FacebookRouter {
   setupPostRoute() {
     this.router.post('/incoming/:userId/facebookBot', (req, res) => {
       var senderId = null; // for facebook
-      return validateParams(req.params)
-        .then(() => this.parseMessage(req.body, req.params.integrationType))
+      var params = { 
+        userId: req.params.userId,
+        integrationType: 'facebookBot'
+      }
+
+      return validateParams(params)
+        .then(() => this.parseMessage(req.body))
         .then(messageAndNumber => {
           // facebook requires confirmation asap
           res.sendStatus(200);
           senderId = messageAndNumber.number
-
           return this.botApi.handleMessage(messageAndNumber.message, messageAndNumber.number);
         })
         .then(response => {
@@ -54,7 +60,7 @@ class FacebookRouter {
     });
   }
   
-  parseMessage(receivedData, integrationType) {
+  parseMessage(receivedData) {
     //TODO: parse the req.data differently based on the integrationType
 
     if (!receivedData) {

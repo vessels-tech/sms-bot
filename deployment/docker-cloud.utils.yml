@@ -1,0 +1,2 @@
+volume-container:
+  image: lewisdaly/volume-container:latest

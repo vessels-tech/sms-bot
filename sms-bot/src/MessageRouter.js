@@ -24,17 +24,19 @@ const facebookBot = new FacebookBot(process.env.MESSENGER_PAGE_ACCESS_TOKEN);
 
 const integrationTypes = require('./utils/enums').IntegrationTypes;
 const FacebookRouter = require('./routes/FacebookRouter');
-const facebookRouter = new FacebookRouter();
+// const facebookRouter 
 const validateParams = require('./routes/utils').validateParams;
 
 class MessageRouter {
   constructor(config) {
     //The underlying express router object
     this.router = router;
-    this.router.use(bodyParser.json()); // for parsing application/json
-    this.router.use(facebookRouter.getRouter());
-
     this.botApi = config.botApi;
+    
+    // use
+    this.router.use(bodyParser.json()); // for parsing application/json
+    this.router.use(new FacebookRouter(this.botApi).getRouter());
+
     this.setupMiddleware();
     this.setupRoutes();
   }

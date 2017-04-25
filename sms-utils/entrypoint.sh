@@ -28,9 +28,8 @@ fi
 #Use this for testing
 if [ "$SCHEDULE_LOCAL_BACKUPS" = true ]; then
   echo 'Scheduling Local backups'
-  echo -e '* * * * * root mongodump --host mongo --db sms-bot --out /backups &>> /var/log/cron.log 2>&1' > /etc/cron.d/test-cron
-  # echo '* * * * * root echo "HELLO KEVIN" >> /var/log/cron.log 2>&1' > /etc/cron.d/test-cron
-  chmod 0644 /etc/cron.d/test-cron
+  echo -e '0 1 * * * root /bin/bash /usr/src/app/mongodb_backup.sh >> /var/log/cron.log 2>&1\n' > /etc/cron.d/backup
+  chmod 0644 /etc/cron.d/backup
 fi
 
 echo 'Init done. Waiting forever now.'

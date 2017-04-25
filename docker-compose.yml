@@ -57,7 +57,7 @@ services:
   redis:
     image: redis:3.0
 
-  mongo-seed:
+  sms-utils:
     build: './sms-utils/'
     environment:
       - SEED_FROM_S3
@@ -70,5 +70,3 @@ services:
       - ./sms-utils:/usr/src/app/
       - ./sms-utils/seed:/seed-data
       - ./sms-utils/backups:/backups
-    command:
-      "tail -f /dev/null"

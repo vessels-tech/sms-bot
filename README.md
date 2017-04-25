@@ -14,8 +14,8 @@ To test it out, send a message to the running server:
 ``` code:bash
 STAGE=local
 ./run_server.sh #run the server...
-curl "localhost:3000/message?number=0404404404&message=hello"
-curl "localhost:3000/message?number=0404404404&message=Well%201234%20in%20313503%20has%20a%20reading%20of%2012.34m%20today"
+curl "localhost:3000/incoming/1/cli?number=0404404404&message=hello"
+curl "localhost:3000/incoming/1/cli?number=0404404404&message=Well%201234%20in%20313503%20has%20a%20reading%20of%2012.34m%20today"
 ```
 
 ## Proposal

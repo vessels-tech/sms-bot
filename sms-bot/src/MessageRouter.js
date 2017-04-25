@@ -13,9 +13,8 @@
     although this may be tricky, as each service will different options
   - How do we handle replies here? Or I guess each user will have a reply endpoint for us to hit...
  */
-
+const router = require('express').Router();
 const bodyParser = require('body-parser');
-
 const rejectError = require('./utils/utils').rejectError;
 
 // TODO: maybe there is a better way to store this
@@ -24,15 +23,18 @@ const FacebookBot = require('./FacebookBot');
 const facebookBot = new FacebookBot(process.env.MESSENGER_PAGE_ACCESS_TOKEN);
 
 const integrationTypes = require('./utils/enums').IntegrationTypes;
+const FacebookRouter = require('./routes/FacebookRouter');
+const facebookRouter = new FacebookRouter();
+const validateParams = require('./routes/utils').validateParams;
 
 class MessageRouter {
-  constructor(express, botApi) {
+  constructor(config) {
     //The underlying express router object
-    this.router = express.Router();
+    this.router = router;
     this.router.use(bodyParser.json()); // for parsing application/json
+    this.router.use(facebookRouter.getRouter());
 
-
-    this.botApi = botApi;
+    this.botApi = config.botApi;
     this.setupMiddleware();
     this.setupRoutes();
   }
@@ -42,43 +44,17 @@ class MessageRouter {
       //TODO: authenticate user from token or something
       next();
     });
-
-    // catch facebookBot webhook authentication request
-    // https://developers.facebook.com/docs/messenger-platform/guides/setup#webhook_setup
-
-
-    //TODO: we should make a separate middleware for auth, that doesn't get confused with the incoming message
-    this.router.use('/incoming/1/facebookBot', function(req, res, next) {
-      if (req.method == 'GET') {
-        if (req.query['hub.mode'] === 'subscribe' && req.query['hub.verify_token'] === MESSENGER_VALIDATION_TOKEN) {
-          res.status(200).send(req.query['hub.challenge']);
-          return next();
-        }
-
-        console.error("Failed validation. Make sure the validation tokens match.");
-        res.sendStatus(403);
-        return next();
-
-      } else {
-        // post request - probably a message
-        next();
-      }
-
-    })
   }
 
   setupRoutes() {
     this.router.get('/incoming/:userId/:integrationType', (req, res) => {
-      return this.validateParams(req.params)
+      return validateParams(req.params)
         .then(() => this.parseMessage(req.query, req.params.integrationType))
         .then(messageAndNumber => {
           return this.botApi.handleMessage(messageAndNumber.message, messageAndNumber.number);
         })
         .then(response => {
-          // already sent facebook status
-          if(req.params.integrationType != 'facebookBot') {
-            res.send({message:response});
-          }
+          res.send({message:response});
         })
         .catch(err => {
           console.error(err);
@@ -94,57 +70,28 @@ class MessageRouter {
 
     this.router.post('/incoming/:userId/:integrationType', (req, res) => {
       var senderId = null; // for facebook
-      return this.validateParams(req.params)
+      return validateParams(req.params)
         .then(() => this.parseMessage(req.body, req.params.integrationType))
         .then(messageAndNumber => {
-
-          // facebook requires confirmation asap
-          if(req.params.integrationType == 'facebookBot') {
-            res.sendStatus(200);
-            senderId = messageAndNumber.number
-          }
-
           return this.botApi.handleMessage(messageAndNumber.message, messageAndNumber.number);
         })
         .then(response => {
-          // already sent facebook status
-          if(req.params.integrationType == 'facebookBot') {
-            facebookBot.sendTextMessage(senderId, response);
-          }
-          else {
-            res.send({message:response});
-          }
+          res.send({message:response});
         })
         .catch(err => {
-          if(req.params.integrationType == 'facebookBot') {
-            facebookBot.sendTextMessage(senderId, err.message);
-          }
-          else {
-            console.error(err);
+          console.error(err);
 
-            let statusCode = 500;
-            if (err.statusCode) {
-              statusCode = err.statusCode;
-            }
-
-            res.status(statusCode).send({message:err.message, status:statusCode});
+          let statusCode = 500;
+          if (err.statusCode) {
+            statusCode = err.statusCode;
           }
+
+          res.status(statusCode).send({message:err.message, status:statusCode});
         });
     });
   }
 
-  validateParams(params) {
-    if (Object.keys(integrationTypes).indexOf(params.integrationType) === -1){
-      return rejectError(400, {message:`unsupported integrationType: ${params.integrationType}`});
-    }
 
-    // TODO: more users?
-    if (params.userId !== '1') {
-      return rejectError(404, {message:`user with userId:${params.userId} not found`});
-    }
-
-    return Promise.resolve(true);
-  }
 
   parseMessage(receivedData, integrationType) {
     //TODO: parse the req.data differently based on the integrationType
@@ -156,30 +103,23 @@ class MessageRouter {
     let missingParams = [];
     let data = {};
 
-    // facebook bot is structured differently
-    // format the params
-    if (integrationType == 'facebookBot') {
-      data = facebookBot.formatRequest(receivedData);
+    if (!receivedData.message) {
+      missingParams.push("message");
     }
-    else {
-      if (!receivedData.message) {
-        missingParams.push("message");
-      }
 
-      if (!receivedData.number) {
-        missingParams.push("number");
-      }
-
-      data = receivedData;
+    if (!receivedData.number) {
+      missingParams.push("number");
     }
+
+    data = receivedData;
 
     if (missingParams.length > 0) {
       return rejectError(400, `Missing required parameters:${missingParams}`);
     }
 
     return Promise.resolve({
-      message:data.message,
-      number:data.number
+      message: data.message,
+      number: data.number
     })
   }
 

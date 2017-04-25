@@ -20,7 +20,11 @@ describe('sms-bot tests', () => {
 
   describe('Util Tests', () => {
     require('./utils/Utils');
-  })
+  });
+
+  describe('RedisHelper Tests', () => {
+    require('./utils/RedisHelper');
+  });
 
 
   afterEach(function() {

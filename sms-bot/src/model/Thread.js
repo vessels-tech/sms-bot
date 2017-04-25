@@ -159,7 +159,7 @@ class Thread {
       return this.setState(ThreadStates.done)
         .then(() => this.handleEnterState())
         .then(() => {
-          return rejectError(500, `Sorry, I didn't undertand your query. Please try again.`)
+          return rejectError(500, `Sorry, I didn't understand your query. Please try again.`)
         });
     }
 

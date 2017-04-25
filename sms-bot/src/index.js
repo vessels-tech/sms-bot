@@ -45,7 +45,6 @@ app.use(function (err, req, res, next) {
   res.status(500).send({message:err.message, status:500});
 });
 
-
 app.get('/', (req, res) => {
   res.status(200).send({message:'sms-bot up and running'});
 });
@@ -68,7 +67,7 @@ return MongoHelper.mongoConnect()
     app.set('config', config);
 
     /* Create and register routers */
-    const messageRouter = new MessageRouter(express, config);
+    const messageRouter = new MessageRouter(config);
     const consoleRouter = new ConsoleRouter(config);
     console.log("configuring routers");
     app.use(messageRouter.getRouter());

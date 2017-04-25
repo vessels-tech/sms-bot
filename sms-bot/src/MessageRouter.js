@@ -22,25 +22,19 @@ const MESSENGER_VALIDATION_TOKEN = process.env.MESSENGER_VALIDATION_TOKEN;
 const FacebookBot = require('./FacebookBot');
 const facebookBot = new FacebookBot(process.env.MESSENGER_PAGE_ACCESS_TOKEN);
 
+const integrationTypes = require('./utils/enums').IntegrationTypes;
 const FacebookRouter = require('./routes/FacebookRouter');
 const facebookRouter = new FacebookRouter();
-
 const validateParams = require('./routes/utils').validateParams;
 
-const integrationTypes = {
-  cli: true,
-  Way2Mint: true,
-  facebookBot: true
-};
-
 class MessageRouter {
-  constructor(botApi) {
+  constructor(config) {
     //The underlying express router object
     this.router = router;
     this.router.use(bodyParser.json()); // for parsing application/json
     this.router.use(facebookRouter.getRouter());
 
-    this.botApi = botApi;
+    this.botApi = config.botApi;
     this.setupMiddleware();
     this.setupRoutes();
   }
@@ -54,7 +48,7 @@ class MessageRouter {
 
   setupRoutes() {
     this.router.get('/incoming/:userId/:integrationType', (req, res) => {
-      return validateParams(req.params, integrationTypes)
+      return validateParams(req.params)
         .then(() => this.parseMessage(req.query, req.params.integrationType))
         .then(messageAndNumber => {
           return this.botApi.handleMessage(messageAndNumber.message, messageAndNumber.number);

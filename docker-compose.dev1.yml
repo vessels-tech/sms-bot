@@ -41,7 +41,7 @@ services:
 
   redis:
     image: redis:3.0
-    
+
   nginx-proxy:
     image: jwilder/nginx-proxy
     container_name: nginx-proxy
@@ -53,7 +53,7 @@ services:
         - /certs:/etc/nginx/certs
         - /etc/nginx/vhost.d
         - /usr/share/nginx/html
-  
+
   nginx-letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion
     container_name: nginx-letsencrypt

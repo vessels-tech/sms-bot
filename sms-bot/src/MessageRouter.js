@@ -97,6 +97,7 @@ class MessageRouter {
     });
 
     this.router.post('/incoming/:userId/:integrationType', (req, res) => {
+      console.log(req.body)
       var senderId = null; // for facebook
       return this.validateParams(req.params)
         .then(() => this.parseMessage(req.body, req.params.integrationType))

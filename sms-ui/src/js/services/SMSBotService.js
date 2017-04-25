@@ -1,12 +1,14 @@
-import { SMS_BOT_BASE_API } from '../env';
+// import { SMS_BOT_BASE_API } from '../env';
 
 const baseOptions = {
-  baseUrl: SMS_BOT_BASE_API,
+  baseUrl: __SMS_BOT_BASE_URL__,
   headers: [
     { key:'Content-type', value: 'application/json'}
   ]
   // baseUrl: 'https:sms.vesselstech.com'
 }
+
+console.log(baseOptions);
 
 export default class SMSBotService {
 

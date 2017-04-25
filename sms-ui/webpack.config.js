@@ -1,8 +1,10 @@
 const path = require('path'),
       webpack = require('webpack');
 
+const smsBotBaseUrl = process.env.SMS_BOT_BASE_URL;
+
 const GLOBALS = {
-  'process.env.SMS_BOT_BASE_API': process.env.SMS_BOT_BASE_API
+  __SMS_BOT_BASE_URL__: `'${smsBotBaseUrl}'`
 };
 
 module.exports = {

@@ -14,8 +14,8 @@ COPY ./ ./
 EXPOSE 3002
 
 #Webpack needs this defined for its build step
-ENV SMS_BOT_BASE_API="https://sms.vesselstech.com"
+ENV SMS_BOT_BASE_URL="https://sms.vesselstech.com"
 RUN npm run build
-RUN cat dist/bundle.js | grep SMS_BOT_BASE_API
+# RUN cat dist/bundle.js | grep 'TEST_ENV'
 
 CMD ["./entrypoint.sh"]

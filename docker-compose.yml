@@ -33,7 +33,7 @@ services:
       - ./sms-ui/:/usr/src/app/
     environment:
       - VIRTUAL_HOST=console.vesselstech.com
-      - SMS_BOT_BASE_API="http://localhost:3000"
+      - SMS_BOT_BASE_URL=http://localhost:3000
     links:
       - mock-service
 

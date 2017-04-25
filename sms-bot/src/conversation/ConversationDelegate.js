@@ -85,6 +85,29 @@ class ConversationDelegate {
   findMissingEntities(entities) {
     return Object.keys(this.desiredEntities).filter(desiredEntitity => !(desiredEntitity in entities));
   }
+
+  /**
+   * Save the conversation to MongoDB in a log
+   */
+  logConversation(entities) {
+    const mongoClient = this.getMongoClient();
+    let saveObject = {
+      method:'queryReading',
+      time: new Date(),
+      entities: entities
+    };
+
+    return mongoClient.collection('readings').insertOne(saveObject)
+    //We don't care if this fails, still continue responding to user
+      .catch(err => {
+        console.error(err);
+      });
+
+  }
+
+  getMongoClient() {
+    return this.app.get('config').mongoClient;
+  }
 }
 
 module.exports = ConversationDelegate;

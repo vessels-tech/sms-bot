@@ -45,6 +45,11 @@ sms-ui:
     - 3002:3002
   environment:
     - VIRTUAL_HOST=console.vesselstech.com
+    - LETSENCRYPT_HOST=console.vesselstech.com
+    - LETSENCRYPT_EMAIL=kevindoveton@me.com
+    - VIRTUAL_PORT=3002
+    - HTTPS_METHOD=redirect
+    - SMS_BOT_BASE_API="https://sms.vesselstech.com"
   links:
     - mock-service
 

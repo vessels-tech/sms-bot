@@ -22,6 +22,7 @@ services:
     links:
       - redis
       - mock-service
+      - mongo
 
   sms-ui:
     build: ./sms-ui/
@@ -32,6 +33,7 @@ services:
       - ./sms-ui/:/usr/src/app/
     environment:
       - VIRTUAL_HOST=console.vesselstech.com
+      - SMS_BOT_BASE_URL=http://localhost:3000
     links:
       - mock-service
 

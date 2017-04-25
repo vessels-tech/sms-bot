@@ -1,6 +1,12 @@
 const path = require('path'),
       webpack = require('webpack');
 
+const smsBotBaseUrl = process.env.SMS_BOT_BASE_URL;
+
+const GLOBALS = {
+  __SMS_BOT_BASE_URL__: `'${smsBotBaseUrl}'`
+};
+
 module.exports = {
   devtool: 'source-map',
   entry: [
@@ -16,7 +22,8 @@ module.exports = {
     filename: 'bundle.js'
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin()
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.DefinePlugin(GLOBALS)
   ],
   module: {
     loaders: [

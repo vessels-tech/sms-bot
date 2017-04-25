@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const validateParams = require('./utils').validateParams;
+const rejectError = require('../utils/utils').rejectError;
 
 // TODO: maybe there is a better way to store this
 const MESSENGER_VALIDATION_TOKEN = process.env.MESSENGER_VALIDATION_TOKEN;

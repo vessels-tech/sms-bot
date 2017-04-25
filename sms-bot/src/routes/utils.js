@@ -1,7 +1,6 @@
 // TODO: maybe a better name
 
 const rejectError = require('../utils/utils').rejectError;
-const rejectError = require('../utils/utils').rejectError;
 const integrationTypes = require('../utils/enums').IntegrationTypes;
 
 class RouteUtils {

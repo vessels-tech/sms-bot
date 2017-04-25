@@ -56,3 +56,17 @@ services:
 
   redis:
     image: redis:3.0
+
+  sms-utils:
+    build: './sms-utils/'
+    environment:
+      - SEED_FROM_S3
+      - SCHEDULE_S3_BACKUPS
+      - SEED_LOCAL=true
+      - SCHEDULE_LOCAL_BACKUPS=true
+    links:
+      - mongo
+    volumes:
+      - ./sms-utils:/usr/src/app/
+      - ./sms-utils/seed:/seed-data
+      - ./sms-utils/backups:/backups

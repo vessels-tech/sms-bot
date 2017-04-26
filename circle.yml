@@ -5,6 +5,7 @@ machine:
     
 dependencies:
   overide:
+    - openssl aes-256-cbc -d -in ./secret.env -k $SECRET_CIRCLE_DECRYPT_KEY >> ~/.circlerc
     - sudo pip install --upgrade docker-compose
 
 test:

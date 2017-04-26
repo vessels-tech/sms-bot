@@ -4,7 +4,7 @@ ENV APP_DIR /usr/src/app
 RUN mkdir -p ${APP_DIR}
 WORKDIR ${APP_DIR}
 
-RUN npm install -g nodemon
+RUN npm install -g nodemon webpack
 
 COPY package.json ./
 RUN npm install

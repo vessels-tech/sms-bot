@@ -123,7 +123,7 @@ class App extends Component {
     const { queries } = this.state;
     let content = <p>Your service is not subscribed to any queries.</p>
 
-    if (queries.length > 0) {
+    if (queries && queries.length > 0) {
       content = queries.map(query => this.getQueryRow(query));
     }
 
@@ -147,7 +147,7 @@ class App extends Component {
   getLogPanel() {
     const { logs } = this.state;
     let content = <p>No logs have been recorded for this service</p>;
-    if (logs.length > 0) {
+    if (logs && logs.length > 0) {
       content = logs.map(log => this.getLogItem(log));
     }
 
@@ -162,7 +162,7 @@ class App extends Component {
   render() {
     return (
       <div className="container">
-        <PageHeader>Welcome to Bare Bones Console</PageHeader>
+        <PageHeader>Welcome to the SMS-Bot</PageHeader>
 
         {this.getIncomingPanel()}
         {this.getQueryPanel()}

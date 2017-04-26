@@ -45,7 +45,7 @@ case $1 in
     sms-mock-service
     ;;
   sms-bot-ui)
-    docker-compose build sms-bot-ui
+    docker-compose build sms-ui
     sms-bot-ui
     ;;
   sms-utils)

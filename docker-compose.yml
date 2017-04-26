@@ -69,5 +69,5 @@ services:
       - mongo
     volumes:
       - ./sms-utils:/usr/src/app/
-      - ./sms-utils/seed:/seed-data
+      # - ./sms-utils/seed:/seed-data
       - ./sms-utils/backups:/backups

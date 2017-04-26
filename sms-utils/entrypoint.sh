@@ -10,7 +10,8 @@ if [ "$SEED_FROM_S3" = true ]; then
 fi
 
 if [ "$SEED_LOCAL" = true ]; then
-  if [ -d /seed-data ]; then
+  echo "seeding locally"
+  if [ -d ${SEED_DIR} ]; then
     /usr/src/app/seed_mongodb_local.sh
   else
     echo 'ERROR: seed data not found: in /seed-data'

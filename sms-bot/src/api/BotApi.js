@@ -25,6 +25,7 @@ class BotApi {
     2. Let the Thread handle the message
   */
   handleMessage(message, number) {
+    //TODO: add serviceId to thread or something
     return Thread.findOrCreate(this.app, number)
       .then(_thread => {
         return _thread.sendHandoff(message);

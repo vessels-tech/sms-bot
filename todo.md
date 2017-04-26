@@ -1,7 +1,7 @@
 #TODO's
 
 
-Overall roadmap:
+##Roadmap:
 - build management console
 - Integrate with MyWell & Way2Mint
 - Add more queries for MyWell, using console
@@ -14,7 +14,6 @@ Overall roadmap:
 
 - fix Thread.handleResponseReceived
   - add post response steps
-  - make it handle replies from service etc.
 
 - For some reason, Thread is asking the router if the conversation is complete,
   - I think the router should really be doing this...

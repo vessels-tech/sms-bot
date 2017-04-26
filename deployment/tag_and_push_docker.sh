@@ -49,7 +49,7 @@ case $1 in
     sms-bot-ui
     ;;
   sms-utils)
-    docker-compose build
+    docker-compose build sms-utils
     sms-utils
     ;;
   *)

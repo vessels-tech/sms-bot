@@ -53,6 +53,12 @@ sms-ui:
   links:
     - mock-service
 
+sms-utils:
+  image: lewisdaly/sms-utils:latest
+  autoredeploy: true
+  links:
+    - mongo
+
 mock-service:
   image: lewisdaly/mock-sms-service:latest
   autoredeploy: true

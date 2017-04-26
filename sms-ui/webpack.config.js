@@ -10,8 +10,9 @@ const GLOBALS = {
 module.exports = {
   devtool: 'source-map',
   entry: [
-    'webpack-dev-server/client?http://0.0.0.0:3002',
-    'webpack/hot/dev-server',
+    //disabled these - seems to fix the node polling thing
+    // 'webpack-dev-server/client?http://0.0.0.0:3002',
+    // 'webpack/hot/dev-server',
     'whatwg-fetch',
     path.resolve(__dirname, './src/js/main.js'),
   ],

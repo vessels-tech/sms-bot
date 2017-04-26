@@ -162,7 +162,7 @@ class App extends Component {
   render() {
     return (
       <div className="container">
-        <PageHeader>Welcome to Bare Bones Console</PageHeader>
+        <PageHeader>Welcome to the SMS-Bot</PageHeader>
 
         {this.getIncomingPanel()}
         {this.getQueryPanel()}

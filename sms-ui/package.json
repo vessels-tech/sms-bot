@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "webpack-dev-server --progress --inline",
     "build": "webpack -p --progress",
-    "serve": "webpack -p --progress && nodemon index.js"
+    "serve": "nodemon index.js"
   },
   "author": "lewis daly, kevin doveton",
   "license": "ISC",

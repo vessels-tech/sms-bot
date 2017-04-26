@@ -2,7 +2,7 @@
 
 
 ##Roadmap:
-- build management console
+- build basic management console
 - Integrate with MyWell & Way2Mint
 - Add more queries for MyWell, using console
 - Find some actual customers and on-board them
@@ -35,7 +35,7 @@
 
 - Fix bootstrap, don't use CDN
 - Set mongo client settings from env variables
-
+- Maybe get material UI going with the UI page - seems pretty easy http://www.material-ui.com/#/customization/colors
 
 
 

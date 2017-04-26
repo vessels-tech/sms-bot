@@ -1,6 +1,7 @@
 const bodyParser = require('body-parser');
 
 const rejectError = require('../utils/utils').rejectError;
+const MongoPromise = require('../utils/MongoPromise');
 
 
 /**
@@ -28,27 +29,27 @@ class ConsoleRouter {
   setupRoutes() {
 
     /**
-     * Get the service configuration etc.
-     *
-    service: {
-      serviceId:
-      integrationType:
-      incomingUrl:
-      outgoingUrl:
-    }
+     * Get the available IntegrationTypes for the service
+     */
+    this.router.get('/console/service/integrationTypes', (req, res) => {
+      const mongo = this.getMongoClient();
+
+      return mongo.find('IntegrationType', {})
+        .then(_docs => {
+          res.status(200).send(_docs);
+        });
+    });
+
+    /**
+     * Get the service configuration
      */
     this.router.get('/console/service/:serviceId', (req, res) => {
-      console.log("TODO: talk to DB");
-      const service = {
-        serviceId: req.query.serviceId,
-        integrationType: 'facebookBot',
-        incomingUrl: `https://sms.vesselstech.com/${req.query.serviceId}/facebookBot`,
-        outgoingUrl: 'https:/the.url/of/your/service'
-      };
-
-      return res.status(200).send(service);
-      //TODO: return promises from these methods!
-      // return Promise.resolve(service);
+      const mongo = this.getMongoClient();
+      return mongo.findOne('Service',{query:{serviceId:req.params.serviceId}})
+        .then(_docs => {
+          console.log(_docs);
+          res.status(200).send(_docs);
+        });
     });
 
     /**
@@ -61,12 +62,12 @@ class ConsoleRouter {
     /**
      * Get the logs for a given service
      */
-    this.router.get('/console/service/:serviceId/logs', (req, res) => {
-      const mongoClient = this.getMongoClient();
-
-      return mongoClient.collection('readings').find().toArray((err, docs) => {
-        res.status(200).send(docs);
-      });
+    this.router.get('/console/service/:serviceId/readings', (req, res) => {
+      const mongo = this.getMongoClient();
+      return mongo.find('Reading', {query:{'serviceId':req.params.serviceId}})
+        .then(_services => {
+          res.status(200).send(_services);
+        });
     });
   }
 
@@ -75,7 +76,7 @@ class ConsoleRouter {
   }
 
   getMongoClient() {
-    return this.config.mongoClient;
+    return new MongoPromise(this.config.mongoClient);
   }
 }
 

@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import Dropzone from 'react-dropzone';
 import SMSBotService from '../services/SMSBotService';
-
+import { Button, ButtonGroup, Col, Grid, PageHeader, Row } from 'react-bootstrap';
 
 class App extends Component {
   constructor(props) {
@@ -10,15 +10,19 @@ class App extends Component {
     this.state = {
       serviceId: null,
       integrationType: null,
-      incomingUrl: null,
-      outgoingUrl: null,
-      logs: []
+      incomingURL: null,
+      replyURL: null,
+      logs: [],
+      integrationTypes: [],
+      queries: []
     };
   }
 
+  /*TODO: find better way to load these things - perhaps using react router */
   componentWillMount() {
     this.fetchServiceConfiguration();
     this.fetchServiceLogs();
+    this.fetchIntegrationTypes();
   }
 
   fetchServiceConfiguration() {
@@ -43,33 +47,91 @@ class App extends Component {
       });
   }
 
+  fetchIntegrationTypes() {
+    return SMSBotService.fetchIntegrationTypes()
+      .then(_integrationTypes => {
+        this.setState({
+          ...this.state,
+          integrationTypes: _integrationTypes
+        });
+      });
+  }
+
   getIncomingPanel() {
-    const { integrationType, incomingUrl } = this.state;
-    if (!integrationType || !incomingUrl) {
-      return null;
+    const { integrationType, incomingURL, integrationTypes, replyURL } = this.state;
+    let content = null;
+    if (!integrationType || !incomingURL || !integrationTypes || !replyURL) {
+      content = <p>Incoming requests not configured</p>;
+    } else {
+      content = (
+        <div>
+          <Row className="">
+            <Col sm={3} md={3}>IntegrationType:</Col>
+            <Col sm={3} md={3}>
+              {integrationType}
+            </Col>
+            <Col sm={6} md={6}>
+              <Button>
+                Change
+              </Button>
+            </Col>
+          </Row>
+          <Row className="">
+            <Col sm={3} md={3}>Incoming Url:</Col>
+            <Col sm={9} md={9}>
+              <h4>{incomingURL}</h4>
+            </Col>
+          </Row>
+          <Row className="">
+            <Col sm={3} md={3}>Reply Url:</Col>
+            <Col sm={9} md={9}>
+              <h4>{replyURL}</h4>
+            </Col>
+          </Row>
+        </div>
+      );
     }
 
     return (
       <div>
-        <p>Integration Type:</p>
-        <h4>{integrationType}</h4>
-        <p>Incoming Url:</p>
-        <h4>{incomingUrl}</h4>
+        <h3 className="page-header">Incoming:</h3>
+          {content}
       </div>
     );
   }
 
-  getOutgoingPanel() {
-    const { outgoingUrl } = this.state;
+  getQueryRow(query) {
+    return (
+      <div key={query.intentType}>
+        <Row className="">
+          <Col sm={3} md={3}>IntentType:</Col>
+          <Col sm={9} md={9}>{query.intentType}</Col>
+        </Row>
+        <Row className="">
+          <Col sm={3} md={3}>url:</Col>
+          <Col sm={9} md={9}>{query.url}</Col>
+        </Row>
+        <Row className="">
+          <Col sm={3} md={3}>Method:</Col>
+          <Col sm={9} md={9}>{query.method}</Col>
+        </Row>
+      </div>
+    );
+  }
 
-    if (!outgoingUrl) {
-      return null;
+  getQueryPanel() {
+    const { queries } = this.state;
+    let content = <p>Your service is not subscribed to any queries.</p>
+
+    if (queries.length > 0) {
+      content = queries.map(query => this.getQueryRow(query));
     }
 
     return (
       <div>
-        <p>Outgoing Url:</p>
-        <h4>{outgoingUrl}</h4>
+        <h3 className="page-header">Queries:</h3>
+        {content}
+        <Button>Edit your subscribed queries</Button>
       </div>
     );
   }
@@ -77,30 +139,33 @@ class App extends Component {
   getLogItem(log) {
     return (
       <div key={log._id}>
-        <p>{log.method}, {log.time}, {JSON.stringify(log.entities)}</p>
+        <p>{log.intentType}, {log.createdAt}, {JSON.stringify(log.entities)}</p>
       </div>
     );
   }
 
   getLogPanel() {
     const { logs } = this.state;
-    if (logs.length === 0) {
-      return (
-        <div>
-          <p>No logs have been recorded for this service</p>
-        </div>
-      );
+    let content = <p>No logs have been recorded for this service</p>;
+    if (logs.length > 0) {
+      content = logs.map(log => this.getLogItem(log));
     }
 
-    return logs.map(log => this.getLogItem(log));
+    return (
+      <div>
+        <h3 className="page-header">Service Logs:</h3>
+        {content}
+      </div>
+    )
   }
 
   render() {
     return (
-      <div>
-        <h1>Welcome to Bare Bones Console</h1>
+      <div className="container">
+        <PageHeader>Welcome to Bare Bones Console</PageHeader>
+
         {this.getIncomingPanel()}
-        {this.getOutgoingPanel()}
+        {this.getQueryPanel()}
         {this.getLogPanel()}
       </div>
     )

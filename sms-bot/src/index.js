@@ -63,6 +63,7 @@ return MongoHelper.mongoConnect()
       conversationRouter: conversationRouter,
       mongoClient: _mongoClient,
     };
+
     //Express' app objects can access this
     app.set('config', config);
 

@@ -8,9 +8,17 @@ const baseOptions = {
   // baseUrl: 'https:sms.vesselstech.com'
 }
 
-console.log(baseOptions);
-
 export default class SMSBotService {
+  static fetchIntegrationTypes() {
+    const options = {
+      uri: '/console/service/integrationTypes',
+    };
+
+    return this.getRequest(options)
+      .catch(err => {
+        console.error("Err fetchServiceConfiguration", err);
+      });
+  }
 
   static fetchServiceConfiguration(serviceId) {
     const options = {
@@ -27,7 +35,7 @@ export default class SMSBotService {
 
   static fetchServiceLogs(serviceId) {
     const options = {
-      uri: '/console/service/:serviceId/logs',
+      uri: '/console/service/:serviceId/readings',
       qs: {
         ":serviceId": serviceId
       }
@@ -83,6 +91,10 @@ export default class SMSBotService {
    * Use find and replace to fill in the query params
    */
   static parseQueryArguments(uri, query) {
+    if (!query) {
+      return uri;
+    }
+
     let string = Object.keys(query).reduce((acc, key) => {
       acc = acc.replace(key, query[key]);
       return acc;

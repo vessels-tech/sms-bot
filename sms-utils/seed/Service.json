@@ -1,0 +1,31 @@
+[
+  {
+    "serviceId": "1",
+    "incomingURL": "https://sms.vesselstech.com/incoming/1",
+    "replyURL": "https://something.com",
+    "integrationType": "facebookBot",
+    "witAiName":"test-wellbot",
+    "queries": [
+      {
+        "intentType": "saveReading",
+        "url": "https://mywell.marvi.org.in/submit",
+        "method": "POST",
+        "requiredEntities": [
+          {"name": "resourceId", "type":"string"},
+          {"name": "reading", "type":"string"},
+          {"name": "datetime", "type":"string"},
+          {"name": "pincode","type":"string"}
+        ]
+      },
+      {
+        "intentType": "queryReading",
+        "url": "https://mywell.marvi.org.in/submit",
+        "method": "GET",
+        "requiredEntities": [
+          {"name": "resourceId", "type":"string"},
+          {"name": "pincode","type":"string"}
+        ]
+      }
+    ]
+   }
+]

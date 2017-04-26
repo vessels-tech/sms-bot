@@ -17,10 +17,9 @@ const router = require('express').Router();
 const bodyParser = require('body-parser');
 const rejectError = require('./utils/utils').rejectError;
 
-
+//TODO: load from db
 const integrationTypes = require('./utils/enums').IntegrationTypes;
 const FacebookRouter = require('./routes/FacebookRouter');
-// const facebookRouter 
 const validateParams = require('./routes/utils').validateParams;
 
 class MessageRouter {
@@ -28,7 +27,7 @@ class MessageRouter {
     //The underlying express router object
     this.router = router;
     this.botApi = config.botApi;
-    
+
     // use
     this.router.use(bodyParser.json()); // for parsing application/json
     this.router.use(new FacebookRouter(this.botApi).getRouter());

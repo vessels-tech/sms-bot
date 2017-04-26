@@ -1,6 +1,7 @@
 // TODO: maybe a better name
 
 const rejectError = require('../utils/utils').rejectError;
+//TODO: load from db
 const integrationTypes = require('../utils/enums').IntegrationTypes;
 
 class RouteUtils {

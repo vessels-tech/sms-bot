@@ -3,3 +3,5 @@ node_modules
 yarn.lock
 .mongo
 sms-utils/backups
+bundle.js
+bundle.js.map

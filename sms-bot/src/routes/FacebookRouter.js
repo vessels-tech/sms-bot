@@ -1,16 +1,20 @@
 const router = require('express').Router();
 const validateParams = require('./utils').validateParams;
 const rejectError = require('../utils/utils').rejectError;
+const isNullOrUndefined = require('../utils/utils').isNullOrUndefined;
 
 // TODO: maybe there is a better way to store this
 const MESSENGER_VALIDATION_TOKEN = process.env.MESSENGER_VALIDATION_TOKEN;
-const FacebookBot = require('../FacebookBot');
-const facebookBot = new FacebookBot(process.env.MESSENGER_PAGE_ACCESS_TOKEN);
+const FacebookBot = require('../api/FacebookBot');
 
 class FacebookRouter {
   constructor(botApi) {
     this.router = router;
     this.botApi = botApi
+    
+    // TODO: one day this will be grabbed from some sort of config depending on which user called it
+    // USE PAGE_ID in request to get the data
+    this.facebookBot = new FacebookBot(process.env.MESSENGER_PAGE_ACCESS_TOKEN);
     this.setupAuth();
     this.setupPostRoute();
   }
@@ -36,50 +40,66 @@ class FacebookRouter {
         integrationType: 'facebookBot'
       }
 
-      return validateParams(params)
-        .then(() => this.parseMessage(req.body))
-        .then(messageAndNumber => {
-          // facebook requires confirmation asap
-          res.sendStatus(200);
-          senderId = messageAndNumber.number
-          return this.botApi.handleMessage(messageAndNumber.message, messageAndNumber.number);
-        })
-        .then(response => {
-          // already sent facebook status
-          facebookBot.sendTextMessage(senderId, response);
-        })
-        .catch(err => {
-          facebookBot.sendTextMessage(senderId, err.message);
-          console.error(err);
+      // TODO: Verify request is from facebook
+      // https://developers.facebook.com/docs/messenger-platform/webhook-reference#security
+      validateParams(params)
+      .then(() => {
+        var data = req.body;
+        if (data.object == 'page') {
+          data.entry.forEach((entry) => {
+            
+            entry.messaging.forEach((msg) => {
+              console.log(msg)
+              this.facebookFlow(msg)
+            }) // end messaging
+            
+          }); // end entry
+        } // end data.object
+      }); // end then
 
-          let statusCode = 500;
-          if (err.statusCode) {
-            statusCode = err.statusCode;
-          }
-        });
+      return res.sendStatus(200);
+      
     });
   }
   
-  parseMessage(receivedData) {
-    //TODO: parse the req.data differently based on the integrationType
-
-    if (!receivedData) {
+  parseMessage(data) {
+    if (!data) {
       return rejectError(400, `receivedData is undefined`);
     }
 
     let missingParams = [];
-    let data = {};
     
-    data = facebookBot.formatRequest(receivedData);
+    if (isNullOrUndefined(data.sender.id)) {
+      missingParams.push("senderId");
+    }
+    if (isNullOrUndefined(data.message.text)) {
+      missingParams.push("message");
+    }
     
     if (missingParams.length > 0) {
       return rejectError(400, `Missing required parameters:${missingParams}`);
     }
 
     return Promise.resolve({
-      message: data.message,
-      number: data.number
+      message: data.message.text,
+      number: data.sender.id
     })
+  }
+  
+  facebookFlow(reqBody) {
+    let senderId = null;
+    this.parseMessage(reqBody)
+      .then(messageAndNumber => {
+        senderId = messageAndNumber.number
+        return this.botApi.handleMessage(messageAndNumber.message, messageAndNumber.number);
+      })
+      .then(response => {
+        this.facebookBot.sendTextMessage(senderId, response);
+      })
+      .catch(err => {
+        this.facebookBot.sendTextMessage(senderId, err.message);
+        console.error(err);
+      });
   }
   
   getRouter() {

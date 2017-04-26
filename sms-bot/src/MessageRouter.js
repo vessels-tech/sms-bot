@@ -17,10 +17,6 @@ const router = require('express').Router();
 const bodyParser = require('body-parser');
 const rejectError = require('./utils/utils').rejectError;
 
-// TODO: maybe there is a better way to store this
-const MESSENGER_VALIDATION_TOKEN = process.env.MESSENGER_VALIDATION_TOKEN;
-const FacebookBot = require('./FacebookBot');
-const facebookBot = new FacebookBot(process.env.MESSENGER_PAGE_ACCESS_TOKEN);
 
 const integrationTypes = require('./utils/enums').IntegrationTypes;
 const FacebookRouter = require('./routes/FacebookRouter');

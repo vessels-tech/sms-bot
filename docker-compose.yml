@@ -26,8 +26,7 @@ services:
 
   sms-ui:
     build: ./sms-ui/
-    # command: './run_dev.sh'
-    command: 'tail -f /dev/null'
+    command: './run_dev.sh'
     ports:
       - 3002:3002
     volumes:

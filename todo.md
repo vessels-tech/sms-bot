@@ -19,6 +19,9 @@
   - I think the router should really be doing this...
   - Change this to the router checking
 
+- Set 5 minute expiry on redis conversations
+- Add "cancel" or "stop" ability to conversation
+
 - End to end integration test script
   - Make so we can target either local or running deployment
 
@@ -27,7 +30,7 @@
 - Add SEED_FROM_S3 and BACKUP_TO_S3 steps to sms-utils
 
 
-
+- Fix bootstrap, don't use CDN
 
 
 

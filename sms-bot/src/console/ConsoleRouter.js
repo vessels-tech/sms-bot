@@ -28,6 +28,16 @@ class ConsoleRouter {
   setupRoutes() {
 
     /**
+     * Get the available IntegrationTypes for the service
+     */
+    this.router.get('/console/service/integrationTypes', (req, res) => {
+      const mongoClient = this.getMongoClient();
+      return mongoClient.collection('IntegrationTypes').find().toArray((err, docs) => {
+        res.status(200).send(docs);
+      });
+    });
+
+    /**
      * Get the service configuration etc.
      *
     service: {

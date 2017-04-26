@@ -1,0 +1,5 @@
+[
+  {"integrationType": "facebookBot"},
+  {"integrationType": "way2mint"},
+  {"integrationType": "cli"}
+]

@@ -11,6 +11,9 @@
 
 
 ##Capture todos here
+- load Thread required entities from DB
+- load Intent types from DB
+- load wit config from DB
 
 - fix Thread.handleResponseReceived
   - add post response steps
@@ -31,6 +34,7 @@
 
 
 - Fix bootstrap, don't use CDN
+- Set mongo client settings from env variables
 
 
 

@@ -9,7 +9,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       MongoClient.connect(`mongodb://${host}:${port}/${database}`,
       (err, db) => {
-        err ? reject(err) : resolve(db);
+        return err ? reject(err) : resolve(db);
       });
     });
   }

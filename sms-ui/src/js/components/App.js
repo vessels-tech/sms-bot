@@ -10,14 +10,11 @@ class App extends Component {
     this.state = {
       serviceId: null,
       integrationType: null,
-      incomingUrl: null,
-      replyUrl: null,
+      incomingURL: null,
+      replyURL: null,
       logs: [],
       integrationTypes: [],
-      queries: [
-        {_id:"1", intentType:'1234', url:'https://url.com'},
-        {_id:"2", intentType:'1235', url:'https://url.com'},
-      ]
+      queries: []
     };
   }
 
@@ -61,34 +58,34 @@ class App extends Component {
   }
 
   getIncomingPanel() {
-    const { integrationType, incomingUrl, integrationTypes, replyUrl } = this.state;
+    const { integrationType, incomingURL, integrationTypes, replyURL } = this.state;
     let content = null;
-    if (!integrationType || !incomingUrl || !integrationTypes || !replyUrl) {
+    if (!integrationType || !incomingURL || !integrationTypes || !replyURL) {
       content = <p>Incoming requests not configured</p>;
     } else {
       content = (
         <div>
           <Row className="">
             <Col sm={3} md={3}>IntegrationType:</Col>
-            <Col sm={9} md={9}>
-              {/* <h4>{integrationType}</h4> */}
-              <ButtonGroup>
-                <Button>Left</Button>
-                <Button>Middle</Button>
-                <Button>Right</Button>
-              </ButtonGroup>
+            <Col sm={3} md={3}>
+              {integrationType}
+            </Col>
+            <Col sm={6} md={6}>
+              <Button>
+                Change
+              </Button>
             </Col>
           </Row>
           <Row className="">
             <Col sm={3} md={3}>Incoming Url:</Col>
             <Col sm={9} md={9}>
-              <h4>{incomingUrl}</h4>
+              <h4>{incomingURL}</h4>
             </Col>
           </Row>
           <Row className="">
             <Col sm={3} md={3}>Reply Url:</Col>
             <Col sm={9} md={9}>
-              <h4>{replyUrl}</h4>
+              <h4>{replyURL}</h4>
             </Col>
           </Row>
         </div>
@@ -105,7 +102,7 @@ class App extends Component {
 
   getQueryRow(query) {
     return (
-      <div key={query._id}>
+      <div key={query.intentType}>
         <Row className="">
           <Col sm={3} md={3}>IntentType:</Col>
           <Col sm={9} md={9}>{query.intentType}</Col>
@@ -113,6 +110,10 @@ class App extends Component {
         <Row className="">
           <Col sm={3} md={3}>url:</Col>
           <Col sm={9} md={9}>{query.url}</Col>
+        </Row>
+        <Row className="">
+          <Col sm={3} md={3}>Method:</Col>
+          <Col sm={9} md={9}>{query.method}</Col>
         </Row>
       </div>
     );
@@ -122,7 +123,7 @@ class App extends Component {
     const { queries } = this.state;
     let content = <p>Your service is not subscribed to any queries.</p>
 
-    if (queries) {
+    if (queries.length > 0) {
       content = queries.map(query => this.getQueryRow(query));
     }
 
@@ -138,7 +139,7 @@ class App extends Component {
   getLogItem(log) {
     return (
       <div key={log._id}>
-        <p>{log.method}, {log.time}, {JSON.stringify(log.entities)}</p>
+        <p>{log.intentType}, {log.createdAt}, {JSON.stringify(log.entities)}</p>
       </div>
     );
   }
@@ -161,7 +162,7 @@ class App extends Component {
   render() {
     return (
       <div className="container">
-        <PageHeader>Welcome to Bare Bones Console </PageHeader>
+        <PageHeader>Welcome to Bare Bones Console</PageHeader>
 
         {this.getIncomingPanel()}
         {this.getQueryPanel()}

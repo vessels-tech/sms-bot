@@ -1,0 +1,24 @@
+IntegrationType:
+  _id: string
+  integrationType: string
+
+Service:
+  _id: string
+  serviceId: string (we need to know the _id to generate the incomingURL before saving, this is easiest for now, but inconsistent with the rest of the model)
+  incomingURL: string
+  integrationType: string
+  witAiName: string (or maybe url)
+  queries:
+    - intentType: string
+      url: string
+      method: string
+      requiredEntities:
+        - name: string
+          type: string
+
+Reading:
+  _id: string
+  serviceId: string
+  intentType: string
+  createdAt: datetime
+  entities: dict

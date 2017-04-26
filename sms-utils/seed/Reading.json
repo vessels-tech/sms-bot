@@ -1,0 +1,4 @@
+[
+  {"serviceId":"1", "createdAt":"2017-04-24T15:24:21.111Z", "intentType":"saveReading", "entities": {"resourceId":"1234", "pincode":"313603"}},
+  {"serviceId":"1", "createdAt":"2017-04-24T15:25:21.111Z", "intentType":"saveReading", "entities": {"resourceId":"1122", "pincode":"313603"}}
+]

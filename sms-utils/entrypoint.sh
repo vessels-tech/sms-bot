@@ -11,9 +11,7 @@ fi
 
 if [ "$SEED_LOCAL" = true ]; then
   if [ -d /seed-data ]; then
-    echo 'seeding mongodb'
-    mongoimport --host mongo --db sms-bot --collection test --type json --file /seed-data/test.json --jsonArray
-    mongoimport --host mongo --db sms-bot --collection IntegrationTypes --type json --file /seed-data/IntegrationTypes.json --jsonArray
+    /usr/src/app/seed_mongodb_local.sh
   else
     echo 'ERROR: seed data not found: in /seed-data'
     exit 1

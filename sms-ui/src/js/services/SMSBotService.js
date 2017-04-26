@@ -35,7 +35,7 @@ export default class SMSBotService {
 
   static fetchServiceLogs(serviceId) {
     const options = {
-      uri: '/console/service/:serviceId/logs',
+      uri: '/console/service/:serviceId/readings',
       qs: {
         ":serviceId": serviceId
       }

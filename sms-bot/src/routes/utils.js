@@ -9,14 +9,19 @@ class RouteUtils {
 
   }
 
+  /* TODO: we can probably make this more generic and stuff */
   static validateParams(params) {
-    if (Object.keys(integrationTypes).indexOf(params.integrationType) === -1){
-      return rejectError(400, {message:`unsupported integrationType: ${params.integrationType}`});
+    let errors = [];
+
+    if (!params.integrationType) {
+      errors.push(`required parameter 'integrationType' is not defined`);
+    }
+    if (!params.serviceId) {
+      errors.push(`required parameter 'serviceId' is not defined`);
     }
 
-    // TODO: more users?
-    if (params.userId !== '1') {
-      return rejectError(404, {message:`user with userId:${params.userId} not found`});
+    if (errors.length > 0) {
+      return rejectError(400, {message:`Request is invalid: ${errors}`});
     }
 
     return Promise.resolve(true);

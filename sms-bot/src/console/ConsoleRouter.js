@@ -65,8 +65,8 @@ class ConsoleRouter {
     this.router.get('/console/service/:serviceId/readings', (req, res) => {
       const mongo = this.getMongoClient();
       return mongo.find('Reading', {query:{'serviceId':req.params.serviceId}})
-        .then(_services => {
-          res.status(200).send(_services);
+        .then(_readings => {
+          res.status(200).send(_readings);
         });
     });
   }

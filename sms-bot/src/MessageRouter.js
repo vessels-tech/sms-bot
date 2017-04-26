@@ -7,15 +7,16 @@
 
 /**
  * Perhaps incoming messages should have the format:
-   POST /incoming/{userId}/{integrationType}
+   POST /incoming/{serviceId}/{integrationType}
 
   - We can verify and authenticate the user based on some JWT token...
     although this may be tricky, as each service will different options
   - How do we handle replies here? Or I guess each user will have a reply endpoint for us to hit...
  */
-const router = require('express').Router();
 const bodyParser = require('body-parser');
 const rejectError = require('./utils/utils').rejectError;
+const MongoPromise = require('./utils/MongoPromise');
+
 
 //TODO: load from db
 const integrationTypes = require('./utils/enums').IntegrationTypes;
@@ -25,12 +26,13 @@ const validateParams = require('./routes/utils').validateParams;
 class MessageRouter {
   constructor(config) {
     //The underlying express router object
-    this.router = router;
-    this.botApi = config.botApi;
+    this.router = require('express-promise-router')()
+    this.config = config;
 
     // use
     this.router.use(bodyParser.json()); // for parsing application/json
-    this.router.use(new FacebookRouter(this.botApi).getRouter());
+    const botApi = this.getBotApi();
+    this.router.use(new FacebookRouter(botApi).getRouter());
 
     this.setupMiddleware();
     this.setupRoutes();
@@ -44,51 +46,53 @@ class MessageRouter {
   }
 
   setupRoutes() {
-    this.router.get('/incoming/:userId/:integrationType', (req, res) => {
+    this.router.get('/incoming/:serviceId/:integrationType', (req, res) => {
+      const botApi = this.getBotApi();
+      const mongo = this.getMongoClient();
+
+      const serviceId = req.params.serviceId;
+      const integrationType = req.params.integrationType;
+
       return validateParams(req.params)
-        .then(() => this.parseMessage(req.query, req.params.integrationType))
+        .then(() => mongo.findOne('Service', {query:{'serviceId':serviceId, 'integrationType':integrationType}}))
+        .then(_service => {
+          if (!_service) {
+            return rejectError(404, `Service not found for serviceId: ${serviceId} and integrationType: ${integrationType}`);
+          }
+          return this.parseMessage(req.query, integrationType)
+        })
         .then(messageAndNumber => {
-          return this.botApi.handleMessage(messageAndNumber.message, messageAndNumber.number);
+          return botApi.handleMessage(messageAndNumber.message, messageAndNumber.number);
         })
         .then(response => {
           res.send({message:response});
-        })
-        .catch(err => {
-          console.error(err);
-
-          let statusCode = 500;
-          if (err.statusCode) {
-            statusCode = err.statusCode;
-          }
-
-          res.status(statusCode).send({message:err.message, status:statusCode});
         });
     });
 
-    this.router.post('/incoming/:userId/:integrationType', (req, res) => {
-      var senderId = null; // for facebook
+    this.router.post('/incoming/:serviceId/:integrationType', (req, res) => {
+      const botApi = this.getBotApi();
+      const mongo = this.getMongoClient();
+
+      const serviceId = req.params.serviceId;
+      const integrationType = req.params.integrationType;
+
       return validateParams(req.params)
-        .then(() => this.parseMessage(req.body, req.params.integrationType))
+        .then(() => mongo.findOne('Service', {query:{'serviceId':serviceId, 'integrationType':integrationType}}))
+        .then(_service => {
+          if (!_service) {
+            return rejectError(404, `Service not found for serviceId: ${serviceId} and integrationType: ${integrationType}`);
+          }
+          return this.parseMessage(req.body, integrationType)
+        })
         .then(messageAndNumber => {
-          return this.botApi.handleMessage(messageAndNumber.message, messageAndNumber.number);
+          //We should pass in the found service from mongodb here... or at least the serviceId and integrationType
+          return botApi.handleMessage(messageAndNumber.message, messageAndNumber.number);
         })
         .then(response => {
           res.send({message:response});
-        })
-        .catch(err => {
-          console.error(err);
-
-          let statusCode = 500;
-          if (err.statusCode) {
-            statusCode = err.statusCode;
-          }
-
-          res.status(statusCode).send({message:err.message, status:statusCode});
         });
     });
   }
-
-
 
   parseMessage(receivedData, integrationType) {
     //TODO: parse the req.data differently based on the integrationType
@@ -122,6 +126,14 @@ class MessageRouter {
 
   getRouter() {
     return this.router;
+  }
+
+  getBotApi() {
+    return this.config.botApi;
+  }
+
+  getMongoClient() {
+    return new MongoPromise(this.config.mongoClient);
   }
 }
 

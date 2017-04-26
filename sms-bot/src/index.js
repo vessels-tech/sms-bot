@@ -22,36 +22,13 @@ app.use(function(req, res, next) {
 });
 
 const conversationRouter = new ConversationRouter(app);
+//TODO: load things from db
 const saveReadingDelegate = new ConversationDelegate(app, 'saveReading');
 const queryReadingDelegate = new ConversationDelegate(app, 'queryReading');
 conversationRouter.registerConversationDelegate(saveReadingDelegate);
 conversationRouter.registerConversationDelegate(queryReadingDelegate);
 
 const botApi = new BotApi(app);
-
-
-/* Error handling */
-app.use(function (err, req, res, next) {
-  if (!err.statusCode) {
-    return next(err);
-  }
-
-  console.error(err.stack);
-  res.status(err.statusCode).send({message:err.message, status:err.statusCode});
-});
-
-app.use(function (err, req, res, next) {
-  console.error(err.stack);
-  res.status(500).send({message:err.message, status:500});
-});
-
-app.get('/', (req, res) => {
-  res.status(200).send({message:'sms-bot up and running'});
-});
-
-app.listen(3000, function () {
-  console.log('sms-bot listening on port 3000!');
-});
 
 
 // TODO: tidy in better config step
@@ -70,7 +47,33 @@ return MongoHelper.mongoConnect()
     /* Create and register routers */
     const messageRouter = new MessageRouter(config);
     const consoleRouter = new ConsoleRouter(config);
-    console.log("configuring routers");
+
     app.use(messageRouter.getRouter());
     app.use(consoleRouter.getRouter());
+
+    /* Error handling */
+    app.use(function (err, req, res, next) {
+      console.log("Error caught");
+
+      if (!err.statusCode) {
+        return next(err);
+      }
+
+      console.error(err.stack);
+      res.status(err.statusCode).send({message:err.message, status:err.statusCode});
+    });
+
+    app.use(function (err, req, res, next) {
+      console.error(err.stack);
+      res.status(500).send({message:err.message, status:500});
+    });
+
+    app.get('/', (req, res) => {
+      res.status(200).send({message:'sms-bot up and running'});
+    });
+
+    app.listen(3000, function () {
+      console.log('sms-bot listening on port 3000!');
+    });
+
   });

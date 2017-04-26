@@ -23,7 +23,8 @@ function sms-bot-ui() {
 }
 
 function sms-utils() {
-  docker tag vesselssmsbot_sms-utils lewisdaly/sms-utils:latest
+  name=_sms-utils
+  docker tag $dirname$name lewisdaly/sms-utils:latest
   docker push lewisdaly/sms-utils:latest
 }
 
@@ -48,9 +49,11 @@ case $1 in
     sms-bot-ui
     ;;
   sms-utils)
-    docker-compose build
+    docker-compose build sms-utils
     sms-utils
+    ;;
   *)
     echo "usage: $@ {all, sms-bot, sms-mock-service, sms-bot-ui, sms-utils}"
     exit 1
+    ;;
 esac

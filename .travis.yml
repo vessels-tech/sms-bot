@@ -13,3 +13,4 @@ services:
   - docker
 script:
   - ./run_unit_tests.sh build
+  

@@ -22,10 +22,10 @@ app.use(function(req, res, next) {
 
 const conversationRouter = new ConversationRouter(app);
 //TODO: load things from db
-const saveReadingDelegate = new ConversationDelegate(app, 'saveReading');
-const queryReadingDelegate = new ConversationDelegate(app, 'queryReading');
-conversationRouter.registerConversationDelegate(saveReadingDelegate);
-conversationRouter.registerConversationDelegate(queryReadingDelegate);
+// const saveReadingDelegate = new ConversationDelegate(app, 'saveReading');
+// const queryReadingDelegate = new ConversationDelegate(app, 'queryReading');
+// conversationRouter.registerConversationDelegate(saveReadingDelegate);
+// conversationRouter.registerConversationDelegate(queryReadingDelegate);
 
 const botApi = new BotApi(app);
 

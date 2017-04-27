@@ -33,6 +33,7 @@ class MessageRouter {
     this.router.use(bodyParser.json()); // for parsing application/json
     const botApi = this.getBotApi();
     this.router.use(new FacebookRouter(botApi).getRouter());
+    /* add other integations here */
 
     this.setupMiddleware();
     this.setupRoutes();
@@ -53,16 +54,19 @@ class MessageRouter {
       const serviceId = req.params.serviceId;
       const integrationType = req.params.integrationType;
 
+      let service = null;
+
       return validateParams(req.params)
         .then(() => mongo.findOne('Service', {query:{'serviceId':serviceId, 'integrationType':integrationType}}))
         .then(_service => {
           if (!_service) {
             return rejectError(404, `Service not found for serviceId: ${serviceId} and integrationType: ${integrationType}`);
           }
+          service = _service;
           return this.parseMessage(req.query, integrationType)
         })
         .then(messageAndNumber => {
-          return botApi.handleMessage(messageAndNumber.message, messageAndNumber.number);
+          return botApi.handleMessage(service, messageAndNumber.message, messageAndNumber.number);
         })
         .then(response => {
           res.send({message:response});
@@ -76,6 +80,8 @@ class MessageRouter {
       const serviceId = req.params.serviceId;
       const integrationType = req.params.integrationType;
 
+      let service = null;
+
       return validateParams(req.params)
         .then(() => mongo.findOne('Service', {query:{'serviceId':serviceId, 'integrationType':integrationType}}))
         .then(_service => {
@@ -86,7 +92,7 @@ class MessageRouter {
         })
         .then(messageAndNumber => {
           //We should pass in the found service from mongodb here... or at least the serviceId and integrationType
-          return botApi.handleMessage(messageAndNumber.message, messageAndNumber.number);
+          return botApi.handleMessage(service, messageAndNumber.message, messageAndNumber.number);
         })
         .then(response => {
           res.send({message:response});

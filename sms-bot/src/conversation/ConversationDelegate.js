@@ -42,10 +42,11 @@ const config = {
 class ConversationDelegate {
   constructor(app, intentType) {
     this.app = app;
+
     //TODO: define and read different conversation types from a json config file
-    if (Object.keys(desiredEntities).indexOf(intentType) === -1) {
-      return rejectError('500', `ConversationDelegateType ${intentType} is not defined.`);
-    }
+    // if (Object.keys(desiredEntities).indexOf(intentType) === -1) {
+      // return rejectError('500', `ConversationDelegateType ${intentType} is not defined.`);
+    // }
 
     this.intent = intentType;
     this.desiredEntities = desiredEntities[intentType];

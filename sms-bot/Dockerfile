@@ -5,6 +5,9 @@ ENV APP_DIR /usr/src/app
 ENV TEST_DIR ${APP_DIR}/test
 ENV TOKEN .
 
+# set config
+ENV NPM_CONFIG_LOGLEVEL warn
+
 RUN mkdir -p ${APP_DIR}
 RUN mkdir -p ${TEST_DIR}
 WORKDIR ${APP_DIR}

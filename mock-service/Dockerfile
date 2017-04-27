@@ -3,6 +3,9 @@ FROM node:6
 # app directory
 ENV APP_DIR /usr/src/app
 
+# set config
+ENV NPM_CONFIG_LOGLEVEL warn
+
 RUN mkdir -p ${APP_DIR}
 WORKDIR ${APP_DIR}
 

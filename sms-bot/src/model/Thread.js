@@ -18,7 +18,7 @@ const ThreadStates = {
   done: 'DONE',//All Necessary information received
 }
 
-//TODO: make this more extendable and configurable
+//TODO: load this from the db
 const desiredEntities = {
   saveReading: {
     resourceId: true,

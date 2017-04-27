@@ -1,4 +1,4 @@
-# sms-bot
+# sms-bot [![Build Status](https://travis-ci.org/vessels-tech/sms-bot.svg?branch=master)](https://travis-ci.org/vessels-tech/sms-bot)
 A sms bot for data collection. Backed by Wit.ai.
 
 

@@ -1,12 +1,12 @@
 "use strict"
-
-const RedisHelper = require('../utils/RedisHelper');
-const Thread = require('../model/Thread');
-const rejectError = require('../utils/utils').rejectError;
-const ConversationCompleteResponse = require('./ConversationCompleteResponse');
-const SubmitConversationResponse = require('./SubmitConversationResponse');
-const ServiceApi = require('../api/ServiceApi');
-
+const use = require('undot')
+const RedisHelper = use('/./utils/RedisHelper');
+const Thread = use('/./model/Thread');
+const rejectError = use('/./utils/utils').rejectError;
+const ConversationCompleteResponse = use('/./model/ConversationCompleteResponse');
+const SubmitConversationResponse = use('/./model/SubmitConversationResponse');
+const ServiceApi = use('/./api/ServiceApi');
+const MongoPromise = use('/./utils/MongoPromise');
 
 
 //For each intent, we need all of these entites in order to complete a query
@@ -106,7 +106,9 @@ class ConversationDelegate {
   }
 
   getMongoClient() {
-    return this.app.get('config').mongoClient;
+    //just testing this out
+    const app = express();
+    return new MongoPromise(app.get('config').mongoClient);
   }
 }
 

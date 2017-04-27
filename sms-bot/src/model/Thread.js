@@ -6,6 +6,7 @@ const isNullOrUndefined = use('/./utils/utils').isNullOrUndefined;
 const Interaction = use('/./model/Interaction');
 const RedisHelper = use('/./utils/RedisHelper');
 const rejectError = use('/./utils/utils').rejectError;
+//TODO: load these from db
 const IntentTypes = use('/./utils/enums').IntentTypes;
 const InteractionTypes = use('/./utils/enums').InteractionTypes;
 const AIApi = use('/./api/AIApi');
@@ -82,7 +83,13 @@ class Thread {
     this.state = ThreadStates.pending;
 
     const mongo = this.getMongoClient();
-
+    return mongo.findOne('Service', {query:{'serviceId':serviceId}})
+      .then(_service => {
+        if (!_service) {
+          return rejectError(404, `Service not found for serviceId: ${serviceId}`);
+        }
+        this.service = _service;
+      });
   }
 
   /**
@@ -92,7 +99,6 @@ class Thread {
     this.addInteraction(message, InteractionTypes.message);
     let response = null;
 
-    //TODO: talk to the AI service
     return AIApiClient.understandMessage(message)
       .then(_response => response = _response)
       .then(() => this.setState(ThreadStates.handoffSent))
@@ -243,6 +249,11 @@ class Thread {
       }
     });
 
+    //Make sure that the intent is defined for the service
+    if (this.getPossibleIntents().indexOf(intent) === -1) {
+      return rejectError(400, `Found intent: ${intent} not found on service with serviceId: ${this.serviceId}.`);
+    }
+
     return intent;
   }
 
@@ -263,6 +274,15 @@ class Thread {
   getMongoClient() {
     return new MongoPromise(this.app.get('config').mongoClient);
   }
+
+  getPossibleIntents() {
+    return this.service.queries.map(query => query.intentType);
+  }
+
+  getDesiredEntities(intent) {
+     const query = this.service.queries.filter(query => query.intentType === intent)[0];
+     return query.requiredEntities;
+   }
 
   /**
    * Save the Thread to redis.

@@ -57,6 +57,8 @@ class MessageRouter {
       let service = null;
 
       return validateParams(req.params)
+        //serviceId will probably be unique by itself, but we need to check to make sure that the correct integrationType is attached to the service
+        //As users can change integrationTypes for a given service
         .then(() => mongo.findOne('Service', {query:{'serviceId':serviceId, 'integrationType':integrationType}}))
         .then(_service => {
           if (!_service) {

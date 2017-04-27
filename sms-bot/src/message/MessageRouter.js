@@ -62,6 +62,7 @@ class MessageRouter {
           if (!_service) {
             return rejectError(404, `Service not found for serviceId: ${serviceId} and integrationType: ${integrationType}`);
           }
+
           service = _service;
           return this.parseMessage(req.query, integrationType)
         })
@@ -88,6 +89,8 @@ class MessageRouter {
           if (!_service) {
             return rejectError(404, `Service not found for serviceId: ${serviceId} and integrationType: ${integrationType}`);
           }
+
+          service = _service;
           return this.parseMessage(req.body, integrationType)
         })
         .then(messageAndNumber => {

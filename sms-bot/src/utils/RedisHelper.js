@@ -1,6 +1,8 @@
 const isNullOrUndefined = require('./utils').isNullOrUndefined;
 const redis = require('redis');
 
+const EXPIRY = 60 * 5; //5 mins
+
 class RedisHelper {
   constructor() {
     if (isNullOrUndefined(global.redisClients)) {
@@ -40,7 +42,7 @@ class RedisHelper {
     }
 
     return new Promise((resolve, reject) => {
-      this.client.set(key, JSON.stringify(value), (err, value) => {
+      this.client.set(key, JSON.stringify(value), 'EX', EXPIRY, (err, value) => {
         if (!isNullOrUndefined(err)) {
           return reject(err);
         }

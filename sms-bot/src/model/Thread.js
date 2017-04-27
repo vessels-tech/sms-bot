@@ -1,12 +1,15 @@
-const isNullOrUndefined = require('../utils/utils').isNullOrUndefined;
+const use = require('undot');
+const express = require('express');
 
-const Interaction = require('./Interaction');
-const RedisHelper = require('../utils/RedisHelper');
-const rejectError = require('../utils/utils').rejectError;
-const IntentTypes = require('../utils/enums').IntentTypes;
-const InteractionTypes = require('../utils/enums').InteractionTypes;
-const AIApi = require('../api/AIApi');
 
+const isNullOrUndefined = use('/./utils/utils').isNullOrUndefined;
+const Interaction = use('/./model/Interaction');
+const RedisHelper = use('/./utils/RedisHelper');
+const rejectError = use('/./utils/utils').rejectError;
+const IntentTypes = use('/./utils/enums').IntentTypes;
+const InteractionTypes = use('/./utils/enums').InteractionTypes;
+const AIApi = use('/./api/AIApi');
+const MongoPromise = use('/./utils/MongoPromise');
 
 const redisClient = new RedisHelper();
 const AIApiClient = new AIApi();
@@ -42,19 +45,24 @@ const stateTransitions = {
   DONE: []
 }
 
+const getKey = (serviceId, number) => {
+  return `${serviceId}-${number}`;
+}
+
 class Thread {
 
-  static findOrCreate(app, key) {
+  static findOrCreate(app, serviceId, number) {
+    let key = getKey(serviceId, number);
     return redisClient.get(key)
     .then(_threadString => {
       const _thread = JSON.parse(_threadString);
 
       if (isNullOrUndefined(_thread)) {
-        let thread = new Thread(app, key);
+        let thread = new Thread(app, serviceId, number);
         return thread;
       }
       //Recreate the thread from redis. Need to call new to get the functions etc.
-      let thread = new Thread(app, key);
+      let thread = new Thread(app, serviceId, number);
       thread.interactions = _thread.interactions;
       thread.entities = _thread.entities;
       thread.intent = _thread.intent;
@@ -64,13 +72,17 @@ class Thread {
     });
   }
 
-  constructor(app, number) {
+  constructor(app, serviceId, number) {
     this.app = app;
+    this.serviceId = serviceId;
     this.number = number;
     this.interactions = []; //Ordered list of interactions between the user and api. Latest interactions are at the end!
     this.entities = {};     //The entities found in the interactions
     this.intent = null;
     this.state = ThreadStates.pending;
+
+    const mongo = this.getMongoClient();
+
   }
 
   /**
@@ -248,23 +260,25 @@ class Thread {
     return this.app.get('config').conversationRouter;
   }
 
+  getMongoClient() {
+    return new MongoPromise(this.app.get('config').mongoClient);
+  }
+
   /**
    * Save the Thread to redis.
-   * //TODO: Set expiry
    */
   save() {
-    //TODO: configure to not save in test or something... For now uncomment to avoid evil state
-    // return Promise.resolve(true);
-    return redisClient.set(this.number, this);
+    const key = getKey(this.serviceId, this.number);
+    return redisClient.set(key, this);
   }
 
   /**
    * Delete the thread from redis
    */
   delete() {
-    return redisClient.delete(this.number);
+    const key = getKey(this.serviceId, this.number);
+    return redisClient.delete(key);
   }
-
 }
 
 module.exports = Thread;

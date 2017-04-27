@@ -14,9 +14,9 @@ services:
   - docker
 script:
   - docker-compose -f docker-compose.yml build
-  - docker-compose -f docker-compose.yml pull
+  - docker-compose -f docker-compose.yml pull --ignore-pull-failures
   - docker-compose -f docker-compose.test.yml build
-  - docker-compose -f docker-compose.test.yml pull
+  - docker-compose -f docker-compose.test.yml pull --ignore-pull-failures
   - docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d sms-bot
   - docker exec -it sms-bot bash -c "/usr/src/app/test/test.sh"
 after_success:

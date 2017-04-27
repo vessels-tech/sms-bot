@@ -1,8 +1,7 @@
-const isNullOrUndefined = require('util').isNullOrUndefined;
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const MessageRouter = require('./MessageRouter');
+const MessageRouter = require('./message/MessageRouter');
 const ConsoleRouter = require('./console/ConsoleRouter');
 const ConversationDelegate = require('./conversation/ConversationDelegate');
 const ConversationRouter = require('./conversation/ConversationRouter');
@@ -53,8 +52,6 @@ return MongoHelper.mongoConnect()
 
     /* Error handling */
     app.use(function (err, req, res, next) {
-      console.log("Error caught");
-
       if (!err.statusCode) {
         return next(err);
       }

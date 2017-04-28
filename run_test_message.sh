@@ -9,8 +9,9 @@
 ## "What is the reading of well 1234 in 321423?"
 
 
-
-MESSAGE=`node -p "encodeURIComponent('$1')"`
+#only use for get!
+# MESSAGE=`node -p "encodeURIComponent('$1')"`
+MESSAGE=$1
 echo $MESSAGE
 # curl "localhost:3000/incoming/1/cli?number=0404404404&message=$MESSAGE"
 # curl "https://dev1.kdoveton.com/incoming/1/cli?number=0404404404&message=$MESSAGE"

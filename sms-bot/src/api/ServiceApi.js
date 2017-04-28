@@ -33,18 +33,14 @@ class ServiceApi {
     this.endpoints = services[serviceType].endpoints;
   }
 
-  handleRequest(requestType, entities) {
-    //TODO: check for request type!
-    if (Object.keys(this.endpoints).indexOf(requestType) == -1) {
-      return rejectError(500, `Error handling request. requestType ${requestType} is not defined.`);
-    }
-
+  handleRequest(query, entities) {
+    console.log("queryURL", query.url);
     const options = {
-        uri: `${this.baseUrl}${this.endpoints[requestType]}`,
+        uri: `${query.url}`,
         json: true
       }
 
-    //Hopefully all of these apis will like posts...
+    //TODO: load GET or POST configuration from query
     return request.post(options);
   }
 

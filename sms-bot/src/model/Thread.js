@@ -147,7 +147,6 @@ class Thread {
         return this.handleResponseReceived();
       break;
       case ThreadStates.done:
-        //TODO: log this to a long term database eventually
         return this.handleThreadDone();
       break;
       default:
@@ -182,7 +181,7 @@ class Thread {
     const completeResponse = this.getConversationCompleteResponse();
     if (completeResponse.complete) {
       //submit!
-        return router.submitConversation(this)
+        return router.submitConversation(this.getQuery(this.intent), this.entities)
         .then(_submitConversationResponse => submitConversationResponse = _submitConversationResponse)
         .then(() => this.setState(ThreadStates.done))
         .then(() => this.handleEnterState())
@@ -279,10 +278,13 @@ class Thread {
     return this.service.queries.map(query => query.intentType);
   }
 
+  getQuery(intent) {
+    return this.service.queries.filter(query => query.intentType === intent)[0];
+  }
+
   getDesiredEntities(intent) {
-     const query = this.service.queries.filter(query => query.intentType === intent)[0];
-     return query.requiredEntities;
-   }
+    return this.getQuery(intent).requiredEntities;
+  }
 
   /**
    * Save the Thread to redis.

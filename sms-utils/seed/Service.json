@@ -37,7 +37,7 @@
     "queries": [
       {
         "intentType": "saveReading",
-        "url": "https://mywell.marvi.org.in/submit",
+        "url": "http://mock-service:3001/saveReading",
         "method": "POST",
         "requiredEntities": [
           {"name": "resourceId", "type":"string"},
@@ -48,8 +48,8 @@
       },
       {
         "intentType": "queryReading",
-        "url": "https://mywell.marvi.org.in/submit",
-        "method": "GET",
+        "url": "http://mock-service:3001/queryReading",
+        "method": "POST",
         "requiredEntities": [
           {"name": "resourceId", "type":"string"},
           {"name": "pincode","type":"string"}

@@ -1,7 +1,7 @@
 [
   {
     "serviceId": "1",
-    "incomingURL": "https://sms.vesselstech.com/incoming/1/facebookBot",
+    "incomingURL": "https://sms.vesselstech.com/incoming/1",
     "replyURL": "https://something.com",
     "integrationType": "facebookBot",
     "witAiName":"test-wellbot",
@@ -27,34 +27,5 @@
         ]
       }
     ]
-  },
-  {
-    "serviceId": "2",
-    "incomingURL": "https://sms.vesselstech.com/incoming/2/cli",
-    "replyURL": "https://something.com",
-    "integrationType": "cli",
-    "witAiName":"test-wellbot",
-    "queries": [
-      {
-        "intentType": "saveReading",
-        "url": "http://mock-service:3001/saveReading",
-        "method": "POST",
-        "requiredEntities": [
-          {"name": "resourceId", "type":"string"},
-          {"name": "reading", "type":"string"},
-          {"name": "datetime", "type":"string"},
-          {"name": "pincode","type":"string"}
-        ]
-      },
-      {
-        "intentType": "queryReading",
-        "url": "http://mock-service:3001/queryReading",
-        "method": "POST",
-        "requiredEntities": [
-          {"name": "resourceId", "type":"string"},
-          {"name": "pincode","type":"string"}
-        ]
-      }
-    ]
-  }
+   }
 ]

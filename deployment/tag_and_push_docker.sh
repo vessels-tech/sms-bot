@@ -1,9 +1,8 @@
 #!/bin/bash
 
 echo 'Make sure you are logged in, with docker login'
-#Get the dir 1 level up
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../ && pwd )"
-dirname=$(echo ${DIR##*/} | sed 's/-//g')
+
+dirname=$(echo ${PWD##*/} | sed 's/-//g')
 
 function sms-bot() {
   name=_sms-bot

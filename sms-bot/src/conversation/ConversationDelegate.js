@@ -1,12 +1,12 @@
 "use strict"
-const use = require('undot')
-const RedisHelper = use('/./utils/RedisHelper');
-const Thread = use('/./model/Thread');
-const rejectError = use('/./utils/utils').rejectError;
-const ConversationCompleteResponse = use('/./model/ConversationCompleteResponse');
-const SubmitConversationResponse = use('/./model/SubmitConversationResponse');
-const ServiceApi = use('/./api/ServiceApi');
-const MongoPromise = use('/./utils/MongoPromise');
+
+const RedisHelper = require(__base + '/utils/RedisHelper');
+const Thread = require(__base + '/model/Thread');
+const rejectError = require(__base + '/utils/utils').rejectError;
+const ConversationCompleteResponse = require(__base + '/model/ConversationCompleteResponse');
+const SubmitConversationResponse = require(__base + '/model/SubmitConversationResponse');
+const ServiceApi = require(__base + '/api/ServiceApi');
+const MongoPromise = require(__base + '/utils/MongoPromise');
 
 /**
  * A class for handling different conversations

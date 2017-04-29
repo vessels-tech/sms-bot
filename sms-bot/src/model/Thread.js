@@ -1,15 +1,16 @@
-const use = require('undot');
 const express = require('express');
 
+require(__base + '/conversation/ConversationDelegate');
 
-const isNullOrUndefined = use('/./utils/utils').isNullOrUndefined;
-const Interaction = use('/./model/Interaction');
-const RedisHelper = use('/./utils/RedisHelper');
-const rejectError = use('/./utils/utils').rejectError;
-const ConversationCompleteResponse = use('/./model/ConversationCompleteResponse');
-const InteractionTypes = use('/./utils/enums').InteractionTypes;
-const AIApi = use('/./api/AIApi');
-const MongoPromise = use('/./utils/MongoPromise');
+
+const isNullOrUndefined = require(__base + '/utils/utils').isNullOrUndefined;
+const Interaction = require(__base + '/model/Interaction');
+const RedisHelper = require(__base + '/utils/RedisHelper');
+const rejectError = require(__base + '/utils/utils').rejectError;
+const ConversationCompleteResponse = require(__base + '/model/ConversationCompleteResponse');
+const InteractionTypes = require(__base + '/utils/enums').InteractionTypes;
+const AIApi = require(__base + '/api/AIApi');
+const MongoPromise = require(__base + '/utils/MongoPromise');
 
 const redisClient = new RedisHelper();
 const AIApiClient = new AIApi();

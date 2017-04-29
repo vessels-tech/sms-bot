@@ -1,14 +1,13 @@
 "use strict";
 
-const use = require('undot')
 const request = require('request-promise');
 
-const isNullOrUndefined = use('/./utils/utils').isNullOrUndefined;
-const utils = use('/./utils/utils');
-const rejectError = utils.rejectError;
-const RedisHelper = use('/./utils/RedisHelper');
-const Thread = use('/./model/Thread');
+const isNullOrUndefined = require(__base + '/utils/utils').isNullOrUndefined;
+const utils = require(__base + '/utils/utils');
+const RedisHelper = require(__base + '/utils/RedisHelper');
+const Thread = require(__base + '/model/Thread');
 
+const rejectError = utils.rejectError;
 const redisClient = new RedisHelper();
 
 /**

@@ -1,3 +1,6 @@
+global.__base = __dirname + '/../src';
+global.__base_test = __dirname + '/'
+
 const assert = require('assert');
 const nock = require('nock');
 
@@ -11,19 +14,19 @@ describe('sms-bot tests', () => {
   });
 
   describe('Conversation Tests', () => {
-    require('./conversation/ConversationDelegate');
+    require(__base_test + '/conversation/ConversationDelegate');
   });
 
   describe('Api Tests', () => {
-    require('./api/ServiceApi');
+    require(__base_test + '/api/ServiceApi');
   });
 
   describe('Util Tests', () => {
-    require('./utils/Utils');
+    require(__base_test + '/utils/Utils');
   });
 
   describe('RedisHelper Tests', () => {
-    require('./utils/RedisHelper');
+    require(__base_test + '/utils/RedisHelper');
   });
 
 

@@ -4,7 +4,7 @@ import {
   INVALIDATE_SERVICE_LOGS
 } from '../actions'
 
-function serviceLogs(state = {
+function logs(state = {
   isFetching: false,
   didInvalidate: false,
   serviceLogs: []
@@ -31,13 +31,13 @@ function serviceLogs(state = {
   }
 }
 
-function postsBySubreddit(state = {}, action) {
+function serviceLogs(state = {}, action) {
   switch (action.type) {
     case INVALIDATE_SERVICE_LOGS:
     case RECEIVE_SERVICE_LOGS:
     case REQUEST_SERVICE_LOGS:
       return Object.assign({}, state, {
-        [action.serviceId]: serviceLogs(state[action.serviceId], action)
+        [action.serviceId]: logs(state[action.serviceId], action)
       })
     default:
       return state
@@ -46,7 +46,7 @@ function postsBySubreddit(state = {}, action) {
 
 
 const rootReducer = combineReducers({
-  postsBySubreddit,
+  serviceLogs,
 });
 
 export default rootReducer

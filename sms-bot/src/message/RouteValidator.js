@@ -1,6 +1,4 @@
-// TODO: maybe a better name
-
-const rejectError = require('../utils/utils').rejectError;
+const rejectError = require(__base + '/utils/utils').rejectError;
 
 /**
  * A bunch of tools to validate requests

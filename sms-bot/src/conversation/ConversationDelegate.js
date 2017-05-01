@@ -42,7 +42,7 @@ class ConversationDelegate {
       entities: entities
     };
 
-    return mongoClient.collection('readings').insertOne(saveObject)
+    return mongoClient.save('readings', saveObject)
     //We don't care if this fails, still continue responding to user
       .catch(err => {
         console.error(err);
@@ -55,9 +55,7 @@ class ConversationDelegate {
   }
 
   getMongoClient() {
-    //just testing this out
-    const app = express();
-    return new MongoPromise(app.get('config').mongoClient);
+    return new MongoPromise(this.app.get('config').mongoClient);
   }
 }
 

@@ -14,14 +14,14 @@
   - How do we handle replies here? Or I guess each user will have a reply endpoint for us to hit...
  */
 const bodyParser = require('body-parser');
-const rejectError = require('../utils/utils').rejectError;
-const MongoPromise = require('../utils/MongoPromise');
 
+const rejectError = require(__base + '/utils/utils').rejectError;
+const MongoPromise = require(__base + '/utils/MongoPromise');
+const FacebookRouter = require(__base + '/FacebookRouter');
+const validateParams = require(__base + '/RouteValidator').validateParams;
 
 //TODO: load from db
-const integrationTypes = require('../utils/enums').IntegrationTypes;
-const FacebookRouter = require('./FacebookRouter');
-const validateParams = require('./RouteValidator').validateParams;
+const integrationTypes = require(__bae + '/utils/enums').IntegrationTypes;
 
 class MessageRouter {
   constructor(config) {

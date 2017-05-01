@@ -2,7 +2,7 @@
   Service API is the interface between a ConversationRouter and services that will consume the sms-bot application
 */
 
-const utils = require('../utils/utils');
+const utils = require(__base + '/utils/utils');
 const request = require('request-promise');
 
 const rejectError = utils.rejectError;
@@ -34,14 +34,16 @@ class ServiceApi {
   }
 
   handleRequest(query, entities) {
+    console.log("baseUrl:", this.baseUrl);
     console.log("queryURL", query.url);
     const options = {
-        uri: `${query.url}`,
-        json: true
-      }
+      uri: `${this.baseUrl}${query.url}`,
+      json: true,
+      method: query.method
+    }
 
     //TODO: load GET or POST configuration from query
-    return request.post(options);
+    return request(options);
   }
 
 }

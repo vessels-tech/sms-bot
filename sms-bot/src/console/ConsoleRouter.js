@@ -1,7 +1,7 @@
 const bodyParser = require('body-parser');
 
-const rejectError = require('../utils/utils').rejectError;
-const MongoPromise = require('../utils/MongoPromise');
+const rejectError = require(__base + '/utils/utils').rejectError;
+const MongoPromise = require(__base + '/utils/MongoPromise');
 
 
 /**

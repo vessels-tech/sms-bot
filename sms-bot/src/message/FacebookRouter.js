@@ -1,7 +1,8 @@
 const router = require('express').Router();
-const validateParams = require('./RouteValidator').validateParams;
-const rejectError = require('../utils/utils').rejectError;
-const isNullOrUndefined = require('../utils/utils').isNullOrUndefined;
+
+const validateParams = require(__base + '/message/RouteValidator').validateParams;
+const rejectError = require(__base + '/utils/utils').rejectError;
+const isNullOrUndefined = require(__base + '/utils/utils').isNullOrUndefined;
 
 // TODO: maybe there is a better way to store this
 const MESSENGER_VALIDATION_TOKEN = process.env.MESSENGER_VALIDATION_TOKEN;

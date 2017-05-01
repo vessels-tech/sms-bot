@@ -46,6 +46,14 @@ class MongoPromise {
       });
   }
 
+  collection(collectionName) {
+    return this.db.collection(collectionName);
+  }
+
+  save(collectionName, object) {
+    return this.db.collection(collectionName).insertOne(object);
+  }
+
 }
 
 

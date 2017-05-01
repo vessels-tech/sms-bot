@@ -29,7 +29,6 @@ describe('sms-bot tests', () => {
     require(__base_test + '/utils/RedisHelper');
   });
 
-
   afterEach(function() {
     if(!nock.isDone()) {
       this.test.error(new Error(`Not all nock interceptors were used. \n\tRemaining:\n\t\t${nock.activeMocks()}`));

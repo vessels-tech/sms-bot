@@ -1,8 +1,8 @@
 "use strict"
 
-const ConversationDelegate = require('./ConversationDelegate');
-const isNullOrUndefined = require('../utils/utils').isNullOrUndefined;
-const rejectError = require('../utils/utils').rejectError;
+const ConversationDelegate = require(__base + '/ConversationDelegate');
+const isNullOrUndefined = require(__base + '/utils/utils').isNullOrUndefined;
+const rejectError = require(__base + '/utils/utils').rejectError;
 
 /**
  * Routes conversations to ConversationDelegate based on the intent

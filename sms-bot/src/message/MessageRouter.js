@@ -17,11 +17,11 @@ const bodyParser = require('body-parser');
 
 const rejectError = require(__base + '/utils/utils').rejectError;
 const MongoPromise = require(__base + '/utils/MongoPromise');
-const FacebookRouter = require(__base + '/FacebookRouter');
-const validateParams = require(__base + '/RouteValidator').validateParams;
+const FacebookRouter = require(__base + '/message/FacebookRouter');
+const validateParams = require(__base + '/message/RouteValidator').validateParams;
 
 //TODO: load from db
-const integrationTypes = require(__bae + '/utils/enums').IntegrationTypes;
+const integrationTypes = require(__base + '/utils/enums').IntegrationTypes;
 
 class MessageRouter {
   constructor(config) {

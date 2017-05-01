@@ -1,6 +1,6 @@
 "use strict"
 
-const ConversationDelegate = require(__base + '/ConversationDelegate');
+const ConversationDelegate = require(__base + '/conversation/ConversationDelegate');
 const isNullOrUndefined = require(__base + '/utils/utils').isNullOrUndefined;
 const rejectError = require(__base + '/utils/utils').rejectError;
 

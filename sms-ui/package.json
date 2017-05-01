@@ -38,7 +38,11 @@
     "react-bootstrap": "^0.30.0",
     "react-dom": "^15.1.0",
     "react-dropzone": "^3.12.4",
+    "react-redux": "^5.0.4",
     "react-router": "^2.6.0",
+    "redux": "^3.6.0",
+    "redux-logger": "^3.0.1",
+    "redux-thunk": "^2.2.0",
     "whatwg-fetch": "^2.0.3"
   }
 }

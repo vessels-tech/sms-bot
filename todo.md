@@ -9,9 +9,10 @@
 - Add more integrations
 
 ##Capture todos here
+
 - fix this branch
   - facebook validate params?
-  - nodot
+- UI implement redux!
 - load wit config from DB
 
 - fix Thread.handleResponseReceived

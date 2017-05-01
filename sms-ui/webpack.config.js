@@ -3,6 +3,9 @@ const path = require('path'),
 
 const smsBotBaseUrl = process.env.SMS_BOT_BASE_URL;
 
+//TODO: remove this, it's better to define explicitly
+const minify = process.env.NODE_ENV === 'production';
+
 const GLOBALS = {
   __SMS_BOT_BASE_URL__: `'${smsBotBaseUrl}'`
 };
@@ -25,12 +28,15 @@ module.exports = {
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin(GLOBALS),
+
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production')
       }
     }),
-    new webpack.optimize.UglifyJsPlugin()
+    ...(minify ? [
+      new webpack.optimize.UglifyJsPlugin(),
+    ] : []),
   ],
   module: {
     loaders: [

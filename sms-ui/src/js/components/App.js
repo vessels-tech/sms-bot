@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import Dropzone from 'react-dropzone';
 import SMSBotService from '../services/SMSBotService';
+import ServiceLogContainer from '../containers/ServiceLogContainer';
 import { Button, ButtonGroup, Col, Grid, PageHeader, Row } from 'react-bootstrap';
 
 class App extends Component {
@@ -159,6 +160,12 @@ class App extends Component {
     )
   }
 
+  getServiceLogs() {
+    return (
+      <ServiceLogContainer/>
+    );
+  }
+
   render() {
     return (
       <div className="container">
@@ -166,7 +173,8 @@ class App extends Component {
 
         {this.getIncomingPanel()}
         {this.getQueryPanel()}
-        {this.getLogPanel()}
+        {/* {this.getLogPanel()} */}
+        {this.getServiceLogs()}
       </div>
     )
   }

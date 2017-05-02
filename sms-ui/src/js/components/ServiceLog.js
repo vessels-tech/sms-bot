@@ -6,13 +6,10 @@ import { Button } from 'react-bootstrap';
 class ServiceLog extends Component {
   constructor(props) {
     super(props);
-
   }
 
   componentDidMount() {
-    const { dispatch, serviceLogId } = this.props;
-    dispatch(selectService(serviceLogId));
-    dispatch(fetchServiceLogs(serviceLogId));
+    const { serviceLogId } = this.props;
   }
 
   getLogItem(log) {
@@ -39,13 +36,11 @@ class ServiceLog extends Component {
   }
 
   changeService(serviceId) {
-    const { dispatch } = this.props;
-    dispatch(selectService(serviceId));
-    dispatch(fetchServiceLogs(serviceId));
+    this.props.onChangeServiceId(serviceId);
   }
 
   render() {
-    const { dispatch, isFetching } = this.props;
+    const { isFetching } = this.props;
     console.log("isFetching", isFetching);
     return (
       <div>
@@ -61,21 +56,15 @@ class ServiceLog extends Component {
 
 ServiceLog.propTypes = {
   isFetching: PropTypes.bool.isRequired,
-  serviceLogId: PropTypes.string.isRequired,
+  serviceId: PropTypes.string.isRequired,
   serviceLogs: PropTypes.arrayOf(PropTypes.shape({
     intentType:PropTypes.string,
     createdAt:PropTypes.string,
     entities: PropTypes.dict,
   })).isRequired,
   lastUpdated: PropTypes.number,
-  dispatch: PropTypes.func.isRequired
+  onChangeServiceId: PropTypes.func,
 }
 
-function mapStateToProps(state) {
-  const { serviceLogs, selectedService } = state;
-  return {
-    ...serviceLogs[selectedService]
-  };
-}
 
-export default connect(mapStateToProps)(ServiceLog);
+export default ServiceLog;

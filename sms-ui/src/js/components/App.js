@@ -1,8 +1,8 @@
 import React, { PropTypes, Component } from 'react';
 import Dropzone from 'react-dropzone';
-import SMSBotService from '../services/SMSBotService';
+import SMSBotService from '../client/SMSBotService';
 // import ServiceLogContainer from '../containers/ServiceLogContainer';
-import ServiceLog from './ServiceLog';
+import ServiceLogContainer from './ServiceLogContainer';
 import ServiceConfiguration from './ServiceConfiguration';
 import { Button, ButtonGroup, Col, Grid, PageHeader, Row } from 'react-bootstrap';
 
@@ -11,7 +11,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-      serviceId: null,
+      serviceId: '1',
       integrationType: null,
       incomingURL: null,
       replyURL: null,
@@ -66,9 +66,19 @@ class App extends Component {
     );
   }
 
+  onChangeServiceId(serviceId) {
+    this.setState({
+      ...this.state,
+      serviceId: serviceId,
+    });
+  }
+
   getServiceLogs() {
     return (
-      <ServiceLog serviceLogId={'1'}/>
+      <ServiceLogContainer
+        serviceId={this.state.serviceId}
+        onChangeServiceId={(serviceId) => this.onChangeServiceId(serviceId)}
+      />
     );
   }
 

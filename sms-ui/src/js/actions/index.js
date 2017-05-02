@@ -5,6 +5,9 @@ import SMSBotService from '../client/SMSBotService';
 const REQUEST_SERVICE_LOGS = 'REQUEST_SERVICE_LOGS';
 const RECEIVE_SERVICE_LOGS = 'RECEIVE_SERVICE_LOGS';
 
+const REQUEST_SERVICE_CONFIGURATION = "REQUEST_SERVICE_CONFIGURATION";
+const RECEIVE_SERVICE_CONFIGURATION = "RECEIVE_SERVICE_CONFIGURATION";
+
 const calculateNewState = (state = {}, action) => {
   switch (action.type) {
     case REQUEST_SERVICE_LOGS:
@@ -18,6 +21,18 @@ const calculateNewState = (state = {}, action) => {
         isFetching: false,
         serviceLogs: action.response,
         serviceId: action.serviceId,
+      };
+    case REQUEST_SERVICE_CONFIGURATION:
+      return {
+        ...state,
+        isFetching: true,
+      };
+    case RECEIVE_SERVICE_CONFIGURATION:
+      return {
+        ...state,
+        isFetching: false,
+        serviceId: action.serviceId,
+        serviceConfiguration: action.serviceConfiguration,
       };
     default:
       return state;
@@ -34,8 +49,7 @@ stateDelegate is an Object containing a getState and setState closure, eg:
 */
 export const fetchServiceLogs = (stateDelegate, serviceId, forceUpdate) => {
   let firstState = stateDelegate.getState();
-  /*TODO: this doesn't allow us to do a refresh without changing the serviceId... */
-  console.log("serviceId:", serviceId, "firstState.serviceId:", firstState.serviceId, "forceUpdate:", forceUpdate);
+
   if (serviceId === firstState.serviceId && !forceUpdate) {
     console.log("ignoring fetch as we already have data");
     return;
@@ -46,4 +60,22 @@ export const fetchServiceLogs = (stateDelegate, serviceId, forceUpdate) => {
     .then(_response => {
       stateDelegate.setState(calculateNewState(stateDelegate.getState(), {type:RECEIVE_SERVICE_LOGS, response:_response, serviceId: serviceId}));
     });
+}
+
+
+export const fetchServiceConfiguration = (stateDelegate, serviceId, forceUpdate) => {
+  let firstState = stateDelegate.getState();
+
+  if (serviceId === firstState.serviceId && !forceUpdate) {
+    console.log("ignoring fetch as we already have data");
+    return;
+  }
+
+  stateDelegate.setState(calculateNewState(firstState, {type:REQUEST_SERVICE_CONFIGURATION}));
+  return SMSBotService.fetchServiceConfiguration(serviceId)
+    .then(_response => stateDelegate.setState(calculateNewState(stateDelegate.getState(), {
+      type: RECEIVE_SERVICE_CONFIGURATION,
+      serviceId: serviceId,
+      serviceConfiguration: _response,
+    })));
 }

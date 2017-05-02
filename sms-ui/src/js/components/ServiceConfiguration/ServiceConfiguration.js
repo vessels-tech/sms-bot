@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react';
-import { fetchServiceConfiguration, selectService } from '../actions/index';
+import { fetchServiceConfiguration, selectService } from '/actions/index';
 import { Button, Col, Row, } from 'react-bootstrap';
 
 class ServiceConfiguration extends Component {
@@ -14,6 +14,7 @@ class ServiceConfiguration extends Component {
   }
 
   getIncomingPanel() {
+    console.log("getIncomingPanel");
     const { isFetching, serviceConfiguration } = this.props;
 
     //TODO: when isFetching is false, we should have a service configuration...
@@ -111,9 +112,10 @@ class ServiceConfiguration extends Component {
     const { isFetching } = this.props;
 
 
-    if (isFetching) {
-      return null;
-    }
+    //
+    // if (isFetching) {
+    //   return null;
+    // }
 
     return (
       <div>
@@ -139,10 +141,10 @@ ServiceConfiguration.propTypes = {
       intentType: PropTypes.string,
       url: PropTypes.string,
       method: PropTypes.string,
-      requiredEntities: PropTypes.shape({
+      requiredEntities: PropTypes.arrayOf(PropTypes.shape({
         name:PropTypes.string,
         type:PropTypes.string,
-      }),
+      })),
     })),
   }),
 };

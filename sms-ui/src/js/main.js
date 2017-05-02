@@ -9,7 +9,6 @@ import 'whatwg-fetch';
 import App from './components/App';
 import rootReducer from './reducers';
 import '../styles/main.scss';
-import { fetchServiceLogs } from './actions';
 
 //Not working with latest react
 // const loggerMiddleware = createLogger()
@@ -21,8 +20,6 @@ const store = createStore(
     // loggerMiddleware // neat middleware that logs actions
   )
 );
-
-store.dispatch(fetchServiceLogs('1')).then(() => console.log(store.getState()));
 
 render(
   <Provider store={store}>

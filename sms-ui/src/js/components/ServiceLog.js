@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux'
-import { fetchServiceLogs } from '../actions';
+import { fetchServiceLogs, selectService } from '../actions/index';
+import { Button } from 'react-bootstrap';
 
 class ServiceLog extends Component {
   constructor(props) {
@@ -9,8 +10,9 @@ class ServiceLog extends Component {
   }
 
   componentDidMount() {
-    const { dispatch } = this.props
-    dispatch(fetchServiceLogs("1"));
+    const { dispatch, serviceLogId } = this.props;
+    dispatch(selectService(serviceLogId));
+    dispatch(fetchServiceLogs(serviceLogId));
   }
 
   getLogItem(log) {
@@ -36,13 +38,22 @@ class ServiceLog extends Component {
     )
   }
 
+  changeService(serviceId) {
+    const { dispatch } = this.props;
+    dispatch(selectService(serviceId));
+    dispatch(fetchServiceLogs(serviceId));
+  }
+
   render() {
-    const { isFetching } = this.props;
+    const { dispatch, isFetching } = this.props;
     console.log("isFetching", isFetching);
     return (
       <div>
         {isFetching && <h2>Loading...</h2>}
         {this.getLogPanel()}
+        <Button onClick={() => {this.changeService('1')}}>1</Button>
+        <Button onClick={() => {this.changeService('2')}}>2</Button>
+        <Button onClick={() => {this.changeService('3')}}>3</Button>
       </div>
     );
   }
@@ -50,6 +61,7 @@ class ServiceLog extends Component {
 
 ServiceLog.propTypes = {
   isFetching: PropTypes.bool.isRequired,
+  serviceLogId: PropTypes.string.isRequired,
   serviceLogs: PropTypes.arrayOf(PropTypes.shape({
     intentType:PropTypes.string,
     createdAt:PropTypes.string,
@@ -60,27 +72,10 @@ ServiceLog.propTypes = {
 }
 
 function mapStateToProps(state) {
-  console.log("Mapping state to props", state);
-  const {serviceLogs} = state;
+  const { serviceLogs, selectedService } = state;
   return {
-    ...serviceLogs['1']
+    ...serviceLogs[selectedService]
   };
-  // const { selectedSubreddit, postsBySubreddit } = state;
-  // const {
-  //   isFetching,
-  //   lastUpdated,
-  //   items: posts
-  // } = postsBySubreddit[selectedSubreddit] || {
-  //   isFetching: true,
-  //   items: []
-  // }
-  //
-  // return {
-  //   selectedSubreddit,
-  //   posts,
-  //   isFetching,
-  //   lastUpdated
-  // }
 }
 
 export default connect(mapStateToProps)(ServiceLog);

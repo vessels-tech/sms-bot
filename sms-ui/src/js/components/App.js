@@ -3,6 +3,7 @@ import Dropzone from 'react-dropzone';
 import SMSBotService from '../services/SMSBotService';
 // import ServiceLogContainer from '../containers/ServiceLogContainer';
 import ServiceLog from './ServiceLog';
+import ServiceConfiguration from './ServiceConfiguration';
 import { Button, ButtonGroup, Col, Grid, PageHeader, Row } from 'react-bootstrap';
 
 class App extends Component {
@@ -59,111 +60,15 @@ class App extends Component {
       });
   }
 
-  getIncomingPanel() {
-    const { integrationType, incomingURL, integrationTypes, replyURL } = this.state;
-    let content = null;
-    if (!integrationType || !incomingURL || !integrationTypes || !replyURL) {
-      content = <p>Incoming requests not configured</p>;
-    } else {
-      content = (
-        <div>
-          <Row className="">
-            <Col sm={3} md={3}>IntegrationType:</Col>
-            <Col sm={3} md={3}>
-              {integrationType}
-            </Col>
-            <Col sm={6} md={6}>
-              <Button>
-                Change
-              </Button>
-            </Col>
-          </Row>
-          <Row className="">
-            <Col sm={3} md={3}>Incoming Url:</Col>
-            <Col sm={9} md={9}>
-              <h4>{incomingURL}</h4>
-            </Col>
-          </Row>
-          <Row className="">
-            <Col sm={3} md={3}>Reply Url:</Col>
-            <Col sm={9} md={9}>
-              <h4>{replyURL}</h4>
-            </Col>
-          </Row>
-        </div>
-      );
-    }
-
+  getServiceConfiguration() {
     return (
-      <div>
-        <h3 className="page-header">Incoming:</h3>
-          {content}
-      </div>
+      <ServiceConfiguration serviceId={'1'}/>
     );
-  }
-
-  getQueryRow(query) {
-    return (
-      <div key={query.intentType}>
-        <Row className="">
-          <Col sm={3} md={3}>IntentType:</Col>
-          <Col sm={9} md={9}>{query.intentType}</Col>
-        </Row>
-        <Row className="">
-          <Col sm={3} md={3}>url:</Col>
-          <Col sm={9} md={9}>{query.url}</Col>
-        </Row>
-        <Row className="">
-          <Col sm={3} md={3}>Method:</Col>
-          <Col sm={9} md={9}>{query.method}</Col>
-        </Row>
-      </div>
-    );
-  }
-
-  getQueryPanel() {
-    const { queries } = this.state;
-    let content = <p>Your service is not subscribed to any queries.</p>
-
-    if (queries && queries.length > 0) {
-      content = queries.map(query => this.getQueryRow(query));
-    }
-
-    return (
-      <div>
-        <h3 className="page-header">Queries:</h3>
-        {content}
-        <Button>Edit your subscribed queries</Button>
-      </div>
-    );
-  }
-
-  getLogItem(log) {
-    return (
-      <div key={log._id}>
-        <p>{log.intentType}, {log.createdAt}, {JSON.stringify(log.entities)}</p>
-      </div>
-    );
-  }
-
-  getLogPanel() {
-    const { logs } = this.state;
-    let content = <p>No logs have been recorded for this service</p>;
-    if (logs && logs.length > 0) {
-      content = logs.map(log => this.getLogItem(log));
-    }
-
-    return (
-      <div>
-        <h3 className="page-header">Service Logs:</h3>
-        {content}
-      </div>
-    )
   }
 
   getServiceLogs() {
     return (
-      <ServiceLog/>
+      <ServiceLog serviceLogId={'1'}/>
     );
   }
 
@@ -171,10 +76,7 @@ class App extends Component {
     return (
       <div className="container">
         <PageHeader>Welcome to the SMS-Bot</PageHeader>
-
-        {this.getIncomingPanel()}
-        {this.getQueryPanel()}
-        {/* {this.getLogPanel()} */}
+        {this.getServiceConfiguration()}
         {this.getServiceLogs()}
       </div>
     )

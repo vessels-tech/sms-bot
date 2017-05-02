@@ -4,52 +4,9 @@ const baseOptions = {
   headers: [
     { key:'Content-type', value: 'application/json'}
   ]
-  // baseUrl: 'https:sms.vesselstech.com'
 }
 
-export const REQUEST_SERVICE_LOGS = 'REQUEST_SERVICE_LOGS';
-export const RECEIVE_SERVICE_LOGS = 'RECEIVE_SERVICE_LOGS';
-export const INVALIDATE_SERVICE_LOGS = 'INVALIDATE_SERVICE_LOGS';
-
-
-function requestServiceLogs(serviceId) {
-  return {
-     type: REQUEST_SERVICE_LOGS,
-     serviceId
-   }
-}
-
-function receiveServiceLogs(serviceId, json) {
-  return {
-    type: RECEIVE_SERVICE_LOGS,
-    serviceId,
-    serviceLogs: json,
-    receivedAt: Date.now()
-  }
-}
-
-export function fetchServiceLogs(serviceId) {
-  return (dispatch) => {
-    dispatch(requestServiceLogs(serviceId));
-
-    const options = {
-      uri: '/console/service/:serviceId/readings',
-      qs: {
-       ":serviceId": serviceId
-      }
-    };
-    return getRequest(options)
-      .then(_response => {
-        dispatch(receiveServiceLogs(serviceId, _response));
-      })
-      .catch(err => {
-        console.log(err);
-        return Promise.reject(err);
-      });
-  }
-}
-
-const getRequest = (options) => {
+export const getRequest = (options) => {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
 

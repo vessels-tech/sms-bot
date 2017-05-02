@@ -1,5 +1,4 @@
 import React, { PropTypes, Component } from 'react';
-import { connect } from 'react-redux'
 import { fetchServiceConfiguration, selectService } from '../actions/index';
 import { Button, Col, Row, } from 'react-bootstrap';
 
@@ -10,8 +9,8 @@ class ServiceConfiguration extends Component {
 
   componentDidMount() {
     const { dispatch, serviceId } = this.props;
-    dispatch(selectService(serviceId));
-    dispatch(fetchServiceConfiguration(serviceId));
+    // dispatch(selectService(serviceId));
+    // dispatch(fetchServiceConfiguration(serviceId));
   }
 
   getIncomingPanel() {
@@ -148,12 +147,4 @@ ServiceConfiguration.propTypes = {
   }),
 };
 
-const mapStateToProps = (state) => {
-  console.log("Mapping state to props", state);
-  const { serviceConfiguration, selectedService } = state;
-  return {
-    ...serviceConfiguration[selectedService]
-  };
-}
-
-export default connect(mapStateToProps)(ServiceConfiguration);
+export default ServiceConfiguration;

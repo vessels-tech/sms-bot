@@ -1,9 +1,8 @@
 import React, { PropTypes, Component } from 'react';
 import Dropzone from 'react-dropzone';
-import SMSBotService from '../client/SMSBotService';
-// import ServiceLogContainer from '../containers/ServiceLogContainer';
-import ServiceLogContainer from './ServiceLogContainer';
-import ServiceConfiguration from './ServiceConfiguration';
+import SMSBotService from '/client/SMSBotService';
+import ServiceLogContainer from  '/components/ServiceLog/ServiceLogContainer';
+import ServiceConfiguration from '/components/ServiceConfiguration';
 import { Button, ButtonGroup, Col, Grid, PageHeader, Row } from 'react-bootstrap';
 
 class App extends Component {
@@ -67,6 +66,7 @@ class App extends Component {
   }
 
   onChangeServiceId(serviceId) {
+    console.log("App, onChangeServiceId:", serviceId);
     this.setState({
       ...this.state,
       serviceId: serviceId,
@@ -83,10 +83,11 @@ class App extends Component {
   }
 
   render() {
+    console.log("app render");
     return (
       <div className="container">
         <PageHeader>Welcome to the SMS-Bot</PageHeader>
-        {this.getServiceConfiguration()}
+        {/* {this.getServiceConfiguration()} */}
         {this.getServiceLogs()}
       </div>
     )

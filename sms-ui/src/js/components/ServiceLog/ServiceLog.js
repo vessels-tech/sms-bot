@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux'
-import { fetchServiceLogs, selectService } from '../actions/index';
+import { fetchServiceLogs, selectService } from '/actions';
 import { Button } from 'react-bootstrap';
 
 class ServiceLog extends Component {
@@ -41,7 +41,6 @@ class ServiceLog extends Component {
 
   render() {
     const { isFetching } = this.props;
-    console.log("isFetching", isFetching);
     return (
       <div>
         {isFetching && <h2>Loading...</h2>}

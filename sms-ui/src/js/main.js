@@ -6,24 +6,11 @@ import { Provider } from 'react-redux'
 import { applyMiddleware, createStore } from 'redux'
 import 'whatwg-fetch';
 
-import App from './components/App';
-import rootReducer from './reducers';
+import App from '/components/App';
 import '../styles/main.scss';
 
-//Not working with latest react
-// const loggerMiddleware = createLogger()
-
-const store = createStore(
-  rootReducer,
-  applyMiddleware(
-    thunkMiddleware, // lets us dispatch() functions
-    // loggerMiddleware // neat middleware that logs actions
-  )
-);
 
 render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
+  <App />,
   document.querySelector("#react-mount")
 );

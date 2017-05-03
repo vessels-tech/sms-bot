@@ -24,8 +24,7 @@
     "redis": "^2.7.1",
     "request": "^2.81.0",
     "request-promise": "^4.2.0",
-    "request-promise-native": "^1.0.3",
-    "undot": "^0.3.0"
+    "request-promise-native": "^1.0.3"
   },
   "devDependencies": {
     "chai": "^3.5.0",

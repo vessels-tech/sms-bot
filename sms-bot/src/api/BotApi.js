@@ -1,12 +1,13 @@
 "use strict";
 
 const request = require('request-promise');
-const isNullOrUndefined = require('../utils/utils').isNullOrUndefined;
-const utils = require('../utils/utils');
-const rejectError = utils.rejectError;
-const RedisHelper = require('../utils/RedisHelper');
-const Thread = require('../model/Thread');
 
+const isNullOrUndefined = require(__base + '/utils/utils').isNullOrUndefined;
+const utils = require(__base + '/utils/utils');
+const RedisHelper = require(__base + '/utils/RedisHelper');
+const Thread = require(__base + '/model/Thread');
+
+const rejectError = utils.rejectError;
 const redisClient = new RedisHelper();
 
 /**
@@ -16,7 +17,6 @@ const redisClient = new RedisHelper();
 class BotApi {
   constructor(app) {
     this.app = app;
-
   }
 
   /*
@@ -24,8 +24,8 @@ class BotApi {
     1. Get or create a new Thread for the message
     2. Let the Thread handle the message
   */
-  handleMessage(message, number) {
-    return Thread.findOrCreate(this.app, number)
+  handleMessage(service, message, number) {
+    return Thread.findOrCreate(this.app, service.serviceId, number)
       .then(_thread => {
         return _thread.sendHandoff(message);
       });

@@ -1,12 +1,16 @@
-const isNullOrUndefined = require('../utils/utils').isNullOrUndefined;
+const express = require('express');
 
-const Interaction = require('./Interaction');
-const RedisHelper = require('../utils/RedisHelper');
-const rejectError = require('../utils/utils').rejectError;
-const IntentTypes = require('../utils/enums').IntentTypes;
-const InteractionTypes = require('../utils/enums').InteractionTypes;
-const AIApi = require('../api/AIApi');
+require(__base + '/conversation/ConversationDelegate');
 
+
+const isNullOrUndefined = require(__base + '/utils/utils').isNullOrUndefined;
+const Interaction = require(__base + '/model/Interaction');
+const RedisHelper = require(__base + '/utils/RedisHelper');
+const rejectError = require(__base + '/utils/utils').rejectError;
+const ConversationCompleteResponse = require(__base + '/model/ConversationCompleteResponse');
+const InteractionTypes = require(__base + '/utils/enums').InteractionTypes;
+const AIApi = require(__base + '/api/AIApi');
+const MongoPromise = require(__base + '/utils/MongoPromise');
 
 const redisClient = new RedisHelper();
 const AIApiClient = new AIApi();
@@ -18,20 +22,6 @@ const ThreadStates = {
   done: 'DONE',//All Necessary information received
 }
 
-//TODO: make this more extendable and configurable
-const desiredEntities = {
-  saveReading: {
-    resourceId: true,
-    reading: true,
-    datetime: true,
-    pincode: true
-  },
-  queryReading: {
-    resourceId: true,
-    pincode: true
-  }
-};
-
 /**
  *  A list of transitions, the source on the left, the possible valid desitinations in a list
  */
@@ -42,19 +32,24 @@ const stateTransitions = {
   DONE: []
 }
 
+const getKey = (serviceId, number) => {
+  return `${serviceId}-${number}`;
+}
+
 class Thread {
 
-  static findOrCreate(app, key) {
+  static findOrCreate(app, serviceId, number) {
+    let key = getKey(serviceId, number);
     return redisClient.get(key)
     .then(_threadString => {
       const _thread = JSON.parse(_threadString);
 
       if (isNullOrUndefined(_thread)) {
-        let thread = new Thread(app, key);
+        let thread = new Thread(app, serviceId, number);
         return thread;
       }
       //Recreate the thread from redis. Need to call new to get the functions etc.
-      let thread = new Thread(app, key);
+      let thread = new Thread(app, serviceId, number);
       thread.interactions = _thread.interactions;
       thread.entities = _thread.entities;
       thread.intent = _thread.intent;
@@ -64,13 +59,25 @@ class Thread {
     });
   }
 
-  constructor(app, number) {
+  constructor(app, serviceId, number) {
     this.app = app;
+    this.serviceId = serviceId;
     this.number = number;
     this.interactions = []; //Ordered list of interactions between the user and api. Latest interactions are at the end!
     this.entities = {};     //The entities found in the interactions
     this.intent = null;
     this.state = ThreadStates.pending;
+
+    const mongo = this.getMongoClient();
+    return mongo.findOne('Service', {query:{'serviceId':serviceId}})
+      .then(_service => {
+        if (!_service) {
+          return rejectError(404, `Service not found for serviceId: ${serviceId}`);
+        }
+        this.service = _service;
+
+        return this;
+      });
   }
 
   /**
@@ -80,7 +87,6 @@ class Thread {
     this.addInteraction(message, InteractionTypes.message);
     let response = null;
 
-    //TODO: talk to the AI service
     return AIApiClient.understandMessage(message)
       .then(_response => response = _response)
       .then(() => this.setState(ThreadStates.handoffSent))
@@ -142,7 +148,6 @@ class Thread {
         return this.handleResponseReceived();
       break;
       case ThreadStates.done:
-        //TODO: log this to a long term database eventually
         return this.handleThreadDone();
       break;
       default:
@@ -163,7 +168,7 @@ class Thread {
         });
     }
 
-    if (Object.keys(desiredEntities).indexOf(this.intent) === -1) {
+    if (this.getPossibleIntents().indexOf(this.intent) === -1) {
       return this.setState(ThreadStates.done)
         .then(() => this.handleEnterState())
         .then(() => {
@@ -173,17 +178,15 @@ class Thread {
 
     //Check to see if the conversation is complete
     const router = this.getConversationRouter();
-    //Not sure why we are asking the router if the conversation is complete...
     let submitConversationResponse = null;
-    const completeResponse = router.isConversationComplete(this);
+    const completeResponse = this.getConversationCompleteResponse();
     if (completeResponse.complete) {
       //submit!
-      return router.submitConversation(this)
+        return router.submitConversation(this.getQuery(this.intent), this.entities)
         .then(_submitConversationResponse => submitConversationResponse = _submitConversationResponse)
         .then(() => this.setState(ThreadStates.done))
         .then(() => this.handleEnterState())
         .then(() => {
-
           return submitConversationResponse.message;
         });
     }
@@ -231,6 +234,12 @@ class Thread {
       }
     });
 
+    // //Make sure that the intent is defined for the service
+    // if (this.getPossibleIntents().indexOf(intent) === -1) {
+    //
+    //   return rejectError(400, `Found intent: ${intent} not found on service with serviceId: ${this.serviceId}.`, false);
+    // }
+
     return intent;
   }
 
@@ -239,8 +248,22 @@ class Thread {
     return missing.length === 0;
   }
 
+  getConversationCompleteResponse() {
+    const missingEntities = this.findMissingEntities(this.entities);
+    if (missingEntities.length > 0) {
+      const message = `Missing required entities ${missingEntities}`;
+
+      return new ConversationCompleteResponse(false, missingEntities, message);
+    }
+
+    return new ConversationCompleteResponse(true, [], "Conversation is complete. Submitting");
+  }
+
   findMissingEntities(entities) {
-    return Object.keys(desiredEntities[this.intent])
+    const desired = this.getDesiredEntities(this.intent).map(desiredEntitity => desiredEntitity.name);
+    console.log("intent is:", this.intent);
+
+    return this.getDesiredEntities(this.intent).map(desiredEntitity => desiredEntitity.name)
       .filter(desiredEntitity => !(desiredEntitity in entities));
   }
 
@@ -248,23 +271,37 @@ class Thread {
     return this.app.get('config').conversationRouter;
   }
 
+  getMongoClient() {
+    return new MongoPromise(this.app.get('config').mongoClient);
+  }
+
+  getPossibleIntents() {
+    return this.service.queries.map(query => query.intentType);
+  }
+
+  getQuery(intent) {
+    return this.service.queries.filter(query => query.intentType === intent)[0];
+  }
+
+  getDesiredEntities(intent) {
+    return this.getQuery(intent).requiredEntities;
+  }
+
   /**
    * Save the Thread to redis.
-   * //TODO: Set expiry
    */
   save() {
-    //TODO: configure to not save in test or something... For now uncomment to avoid evil state
-    // return Promise.resolve(true);
-    return redisClient.set(this.number, this);
+    const key = getKey(this.serviceId, this.number);
+    return redisClient.set(key, this);
   }
 
   /**
    * Delete the thread from redis
    */
   delete() {
-    return redisClient.delete(this.number);
+    const key = getKey(this.serviceId, this.number);
+    return redisClient.delete(key);
   }
-
 }
 
 module.exports = Thread;

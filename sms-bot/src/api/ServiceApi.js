@@ -2,7 +2,7 @@
   Service API is the interface between a ConversationRouter and services that will consume the sms-bot application
 */
 
-const utils = require('../utils/utils');
+const utils = require(__base + '/utils/utils');
 const request = require('request-promise');
 
 const rejectError = utils.rejectError;
@@ -33,19 +33,17 @@ class ServiceApi {
     this.endpoints = services[serviceType].endpoints;
   }
 
-  handleRequest(requestType, entities) {
-    //TODO: check for request type!
-    if (Object.keys(this.endpoints).indexOf(requestType) == -1) {
-      return rejectError(500, `Error handling request. requestType ${requestType} is not defined.`);
+  handleRequest(query, entities) {
+    console.log("baseUrl:", this.baseUrl);
+    console.log("queryURL", query.url);
+    const options = {
+      uri: `${this.baseUrl}${query.url}`,
+      json: true,
+      method: query.method
     }
 
-    const options = {
-        uri: `${this.baseUrl}${this.endpoints[requestType]}`,
-        json: true
-      }
-
-    //Hopefully all of these apis will like posts...
-    return request.post(options);
+    //TODO: load GET or POST configuration from query
+    return request(options);
   }
 
 }

@@ -1,4 +1,4 @@
-const InteractionTypes = require('../utils/enums').InteractionTypes;
+const InteractionTypes = require(__base + '/utils/enums').InteractionTypes;
 
 class Interaction {
   constructor(data, type) {

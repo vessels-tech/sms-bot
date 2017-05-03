@@ -11,8 +11,14 @@
 
 
 ##Capture todos here
+<<<<<<< HEAD
+- fix this branch
+  - facebook validate params?
+  - nodot
+=======
 - load Thread required entities from DB
 - load Intent types from DB
+>>>>>>> master
 - load wit config from DB
 
 - fix Thread.handleResponseReceived

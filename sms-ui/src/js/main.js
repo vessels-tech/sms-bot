@@ -6,11 +6,11 @@ import { Provider } from 'react-redux'
 import { applyMiddleware, createStore } from 'redux'
 import 'whatwg-fetch';
 
-import App from '/components/App';
+import Routes from '/components/Routes';
 import '../styles/main.scss';
 
 
 render(
-  <App />,
+  <Routes />,
   document.querySelector("#react-mount")
 );

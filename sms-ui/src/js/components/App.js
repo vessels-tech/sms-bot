@@ -5,7 +5,11 @@ import ServiceLogContainer from  '/components/ServiceLog/ServiceLogContainer';
 import ServiceConfigurationContainer from '/components/ServiceConfiguration/ServiceConfigurationContainer';
 import { Button, ButtonGroup, Col, Grid, PageHeader, Row } from 'react-bootstrap';
 
+import injectTapEventPlugin from 'react-tap-event-plugin';
+injectTapEventPlugin();
+
 class App extends Component {
+  
   constructor(props) {
     super(props);
 

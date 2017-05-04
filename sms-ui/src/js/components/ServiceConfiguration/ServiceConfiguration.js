@@ -1,6 +1,13 @@
 import React, { PropTypes, Component } from 'react';
 import { fetchServiceConfiguration, selectService } from '/actions/index';
 import { Button, Col, Row, } from 'react-bootstrap';
+// import RaisedButton from 'material-ui/RaisedButton';
+import {RaisedButton} from 'material-ui';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+
+
 
 class ServiceConfiguration extends Component {
   constructor(props) {
@@ -100,11 +107,13 @@ class ServiceConfiguration extends Component {
     }
 
     return (
+      <MuiThemeProvider muiTheme={getMuiTheme(lightBaseTheme)}>
       <div>
         <h3 className="page-header">Queries:</h3>
         {content}
-        <Button>Edit your subscribed queries</Button>
+        <RaisedButton primary label="Edit your subscribed queries" />
       </div>
+      </MuiThemeProvider>
     );
   }
 

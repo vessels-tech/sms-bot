@@ -30,10 +30,10 @@ services:
     ports:
       - 3002:3002
     volumes:
-      - ./sms-ui/:/usr/src/app/
+      - ./sms-ui/src:/usr/src/app/src
     environment:
       - VIRTUAL_HOST=console.vesselstech.com
-      - SMS_BOT_BASE_URL=http://localhost:3000
+      - SMS_BOT_BASE_URL=https://sms.vesselstech.com
     links:
       - mock-service
 

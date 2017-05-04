@@ -2,10 +2,7 @@ import React, { PropTypes, Component } from 'react';
 import { fetchServiceConfiguration, selectService } from '/actions/index';
 import { Button, Col, Row, } from 'react-bootstrap';
 // import RaisedButton from 'material-ui/RaisedButton';
-import {RaisedButton} from 'material-ui';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+import {RaisedButton, FlatButton} from 'material-ui';
 
 
 
@@ -43,9 +40,7 @@ class ServiceConfiguration extends Component {
               {integrationType}
             </Col>
             <Col sm={6} md={6}>
-              <Button>
-                Change
-              </Button>
+              <RaisedButton label="Change" secondary/>
             </Col>
           </Row>
           <Row className="">
@@ -107,13 +102,11 @@ class ServiceConfiguration extends Component {
     }
 
     return (
-      <MuiThemeProvider muiTheme={getMuiTheme(lightBaseTheme)}>
       <div>
         <h3 className="page-header">Queries:</h3>
         {content}
-        <RaisedButton primary label="Edit your subscribed queries" />
+        <RaisedButton secondary label="Edit your subscribed queries" />
       </div>
-      </MuiThemeProvider>
     );
   }
 

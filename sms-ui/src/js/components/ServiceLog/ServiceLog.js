@@ -2,7 +2,7 @@ import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux'
 import { fetchServiceLogs, selectService } from '/actions';
 import { Button } from 'react-bootstrap';
-
+import {RaisedButton, FlatButton} from 'material-ui';
 class ServiceLog extends Component {
   constructor(props) {
     super(props);
@@ -45,9 +45,18 @@ class ServiceLog extends Component {
       <div>
         {isFetching && <h2>Loading...</h2>}
         {this.getLogPanel()}
-        <Button onClick={() => {this.changeService('1')}}>1</Button>
-        <Button onClick={() => {this.changeService('2')}}>2</Button>
-        <Button onClick={() => {this.changeService('3')}}>3</Button>
+        <RaisedButton 
+          label="1"
+          onClick={() => {this.changeService('1')}} 
+        />
+        <RaisedButton 
+          label="2"
+          onClick={() => {this.changeService('2')}} 
+        />
+        <RaisedButton
+          label="3" 
+          onClick={() => {this.changeService('3')}} 
+        />
       </div>
     );
   }

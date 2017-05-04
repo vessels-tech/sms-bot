@@ -5,6 +5,16 @@ import ServiceLogContainer from  '/components/ServiceLog/ServiceLogContainer';
 import ServiceConfigurationContainer from '/components/ServiceConfiguration/ServiceConfigurationContainer';
 import { Button, ButtonGroup, Col, Grid, PageHeader, Row } from 'react-bootstrap';
 
+// material ui
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+
+// components
+import AppBar from 'material-ui/AppBar';
+
+// import HeaderBar from '/components/HeaderBar'
+
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
@@ -47,11 +57,18 @@ class App extends Component {
   render() {
     console.log("app render");
     return (
-      <div className="container">
-        <PageHeader>Welcome to the SMS-Bot</PageHeader>
-        {this.getServiceConfiguration()}
-        {this.getServiceLogs()}
-      </div>
+      <MuiThemeProvider muiTheme={getMuiTheme(lightBaseTheme)}>
+        <div>
+          <AppBar
+            title="Bare Bones SMS Console"
+            showMenuIconButton={false}
+          />
+          <div className="container">
+            {this.getServiceConfiguration()}
+            {this.getServiceLogs()}
+          </div>
+        </div>
+      </MuiThemeProvider>
     )
   }
 }

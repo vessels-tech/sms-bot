@@ -1,5 +1,6 @@
 const path = require('path'),
-      webpack = require('webpack');
+      webpack = require('webpack'),
+      CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const smsBotBaseUrl = process.env.SMS_BOT_BASE_URL;
 
@@ -24,7 +25,7 @@ module.exports = {
   cache: true,
   output: {
     path: path.join(__dirname, '/dist'),
-    publicPath: "/dist/",
+    // publicPath: "/dist/",
     filename: 'bundle.js'
   },
   plugins: [
@@ -39,9 +40,16 @@ module.exports = {
     ...(minify ? [
       new webpack.optimize.UglifyJsPlugin(),
     ] : []),
+    new CopyWebpackPlugin([{ 
+      from: './src/html'
+    }])
   ],
   module: {
     loaders: [
+      { 
+        test: /\.(jpe?g|gif|png|svg|woff|ttf|wav|mp3|html|htm)$/, 
+        loader: "file" 
+      },
       {
         test: /\.js$/,
         exclude: /node_modules/,

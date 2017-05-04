@@ -31,6 +31,7 @@ services:
       - 3002:3002
     volumes:
       - ./sms-ui/src:/usr/src/app/src
+      - ./sms-ui/dist:/usr/src/app/dist
     environment:
       - VIRTUAL_HOST=console.vesselstech.com
       - SMS_BOT_BASE_URL=https://sms.vesselstech.com
